@@ -2,12 +2,12 @@
 2- trouble shooting
 3- docker proxy setting
 4- go devlopment environment
+5- k8s compile
 1- install 
 1. install go 
   # tar -C /usr/local/ -xzf go1.10.1.linux-amd64.tar.gz
   # vim /etc/profile
    export PATH=$PATH:/usr/local/go/bin
-   export GOPATH=**** (default is /root)
 
 2. generate certificates for your cluster
   1) generate CA
@@ -219,3 +219,8 @@
    tn -> opposit to tp
    t1 -> first same name location
    ts -> list all same with flag
+
+5- k8s compile
+   #git clone https://github.com/kubernetes/kubernetes.git
+   #cd kubernetes
+   #make release

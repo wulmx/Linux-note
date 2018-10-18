@@ -4,3 +4,5 @@
    should install some package(in SLES15)
    # zypper install xmlto asciidoc e2fslibs-dev libblkid-devel
      libzstd-dev python3-devel lzo-devel
+   # yum install xmlto  asciidoc e2fslibs-dev libblkid-devel ext2fs e2fslibs-dev partclone.x86_64 libzstd* python36 python36-devel lzo-devel.x86_64
+

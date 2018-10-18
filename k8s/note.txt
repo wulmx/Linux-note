@@ -1,4 +1,6 @@
 1- max pods
+2- force to delete pods
+3- docker
 
 1. setting for the max pods
    default is 110 pods per node.
@@ -8,3 +10,10 @@
      # Add your own!
      KUBELET_ARGS="--max-pods=8000" 
   2) restart kubelet and scheduler service
+
+2- force to delete pods
+   # kubectl delete pod ubt1-bb557dc98-77x5q --grace-period=0 --force
+
+3- docker
+  1) import images
+    # docker load < ../k8s/package/nginx.tar

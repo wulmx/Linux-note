@@ -1,0 +1,19 @@
+1. compile
+
+
+1. compile
+  1)install needed packages
+   # yum install git glib2-devel libfdt-devel pixman-devel zlib-devel
+  2) clone the git 
+   # git clone https://github.com/qemu/qemu
+  3)Prepare a native debug build. 
+   # cd qemu
+   # mkdir -p bin/debug/native
+   # cd bin/debug/native
+  4) Configure QEMU and start the build.
+   # ../../../configure --enable-debug
+   # make
+  5) Return to the QEMU root directory.
+   # cd ../../..
+  6) start a simple test:
+   # bin/debug/native/x86_64-softmmu/qemu-system-x86_64 -L pc-bios

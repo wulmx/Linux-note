@@ -44,7 +44,7 @@
 44- hacker operation
 45- VNC
 46- seq
-
+47- cp
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -226,6 +226,7 @@ if can't situation:
   # yum deplist pcp-system-tools
 
 15) how to see thread infomation of process
+  # ps -ef f
   # ps -T -p 3171
   PID  SPID TTY          TIME CMD
   3171  3171 pts/0    00:00:50 iperf3
@@ -555,3 +556,8 @@ if can't situation:
     str009
     str010
     str011
+47- cp
+  1) copy hidden files
+   # cp -R /home/usera/. /mnt/temp
+  2) don't copy hedden files 
+   # cp -R /home/usera/* /mnt/temp

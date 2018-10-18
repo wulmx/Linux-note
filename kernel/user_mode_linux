@@ -1,0 +1,9 @@
+1. UML(User Mode Linux)
+2. install
+http://uml.devloop.org.uk/howto.html
+
+2. install
+  1) # git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+  2) # make defconfig ARCH=um
+  3) # make menuconfig ARCH=um
+  4) # make ARCH=um

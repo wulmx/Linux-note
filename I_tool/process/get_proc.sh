@@ -18,6 +18,6 @@ fi
 for (( i=0; i<${COUNT}; i++ ))
 do
 	date +"%D %T %s"
-	ps -eo "time,pid,ppid,%cpu,%mem,psr,pcpu,stat,wchan:14,time,comm,args" |grep ${GREP}
+	ps -eo "time,pid,ppid,%cpu,%mem,psr,minflt,majflt,pcpu,stat,wchan:14,time,comm,args" |grep ${GREP}
 	sleep ${INTERVAL}
 done

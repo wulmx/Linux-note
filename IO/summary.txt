@@ -3,6 +3,7 @@
 
 
 1. base concept
+  https://blog.csdn.net/peng_cao/article/details/74352259
   1) sector	(logical_block_size)
     - basic unit for hardware trasferring the data
     - generally 512 Byte
