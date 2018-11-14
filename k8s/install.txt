@@ -188,17 +188,29 @@
    2) # tar -zxvf /Linux-note/develop/go/vimconfigdir.tar.gz 
    3) # mv .vim/* /root/.vim
    4) # vim /etc/vimrc
-        1 let g:go_version_warning = 0
-        2
-        3 set nocompatible              " be iMproved, required
-        4 filetype off                  " required
-        5 set rtp+=~/.vim/bundle/Vundle.vim
-        6 call vundle#begin()
-        7 Plugin 'gmarik/Vundle.vim'
-        8 Plugin 'fatih/vim-go'
-        9 call vundle#end()            " required
-       10 filetype plugin indent on    " required
-       11 syntax on
+	let g:go_version_warning = 0
+	set nocompatible             	 " be iMproved, required
+	filetype off                 	 " required
+	set rtp+=~/.vim/bundle/Vundle.vim
+	call vundle#begin()
+	Plugin 'gmarik/Vundle.vim'
+	Plugin 'fatih/vim-go'
+	Plugin 'scrooloose/nerdtree'
+	Plugin 'majutsushi/tagbar'
+	call vundle#end()            	" required
+	map <F3> :NERDTreeMirror<CR>
+	map <F3> :NERDTreeToggle<CR>
+	nmap <F4> :TagbarToggle<CR>
+	filetype plugin indent on  		" required
+	
+	autocmd vimenter * if !argc()|NERDTree|endif
+	let g:NERDTreeDirArrowExpandable = '.'
+	let g:NERDTreeDirArrowCollapsible = '.'
+	let NERDTreeIgnore = ['\.pyc$']  " .....pyc.....
+	let NERDTreeMinimalUI = 1
+	let NERDTreeDirArrows = 1
+	syntax on
+	...
    5) install go tags, will store the gotags and src in /root/bin
      # go get -u github.com/jstemmer/gotags
      # mv /root/bin/gotags /usr/local/go/bin

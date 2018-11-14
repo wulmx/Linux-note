@@ -1,6 +1,7 @@
-1-IPC and  CPI
+1- IPC and  CPI
 2- RTC TSC PIT jiffies 
 3- numactl
+4- search wheter cpu is dispersion
 
 2. IPC & CPI
   IPC = 1/CPI
@@ -26,3 +27,6 @@
    CONFIG_HZ=250
 
 3- numactl
+4- search wheter cpu is dispersion
+   1) sar's runq-sz=cpus, if every cpu has overload, is dispersion
+   

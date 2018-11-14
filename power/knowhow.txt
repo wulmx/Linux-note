@@ -5,6 +5,7 @@
 5- turbostat
 6- tuned  (ref: https://talk.linuxtoy.org/tuned-adm-slides/#slide=52)
 7- x86_energy_perf_policy
+8. impitool   (ref: http://blog.51cto.com/xiamachao/1685721)
 1. S/C/P state
  1) C state
    get the driver type, default is intel driver
@@ -117,3 +118,8 @@
     cpu0: 0x0000000000000000  <-- performance
     cpu1: 0x0000000000000000
 
+8. impitool
+  cat get the power stat using follow command
+  # ipmitool sensor list
+  # ipmitool sensor | grep "Total Power"
+  # ipmitool -I open sensor get "Total Power"

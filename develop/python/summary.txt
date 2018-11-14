@@ -1,0 +1,19 @@
+1. transfer
+2. array
+
+
+1. transfer
+   1) string transfer
+      a=2
+      b=str(a)
+   2) int transfer
+      a="11"
+      b=int(a)
+
+2. array
+   word=['a', 'b', 'c', 'd', 'e']
+   1) all elements
+      word[0:]
+   2) last elements
+      word[-1]
+

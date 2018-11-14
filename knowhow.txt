@@ -45,6 +45,7 @@
 45- VNC
 46- seq
 47- cp
+48- monitor threads
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -367,7 +368,11 @@ if can't situation:
      d       e       f
 
 
-25) top 
+25) top
+  - monitor the thread of process
+    # top -H -p 2069
+    or 
+    use H key change de type. 
   - monitor the usage of all child process
     # top -p $(pgrep -P 2069 -d,)
     or
@@ -561,3 +566,13 @@ if can't situation:
    # cp -R /home/usera/. /mnt/temp
   2) don't copy hedden files 
    # cp -R /home/usera/* /mnt/temp
+
+48- monitor threads
+  1) top
+    # top -H -p 2069
+    or 
+    use H key change de type. 
+  2) ps
+   # ps -Tf -p 2069
+  3) pstree
+   # pstree -l -a -A 20708

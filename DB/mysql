@@ -1,0 +1,8 @@
+1. [ERROR] Fatal error: Can't open and lock privilege tables: Table 'mysql.host' doesn't exist
+
+
+
+1. [ERROR] Fatal error: Can't open and lock privilege tables: Table 'mysql.host' doesn't exist
+  dive into /var/log/marriadb/marriadb.log search the error message
+  SOLUTION:
+  # mysql_install_db
