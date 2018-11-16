@@ -39,9 +39,9 @@
 #include <stdio.h>
 
 #ifdef SSMALL
-#define MIMAX            33
-#define MJMAX            33
-#define MKMAX            65
+#define MIMAX            17
+#define MJMAX            17
+#define MKMAX            33
 #endif
 
 #ifdef SMALL
@@ -108,7 +108,17 @@ main()
   nn= 3;
   printf(" Start rehearsal measurement process.\n");
   printf(" Measure the performance in %d times.\n\n",nn);
-
+  
+  printf("size of int is %d\n", sizeof(int));
+  printf("size of float is %d\n", sizeof(float));
+  printf("size of double is %d\n", sizeof(double));
+  printf("size of p is %d\n", sizeof(p));
+  printf("size of a is %d\n", sizeof(a));
+  printf("size of b is %d\n", sizeof(b));
+  printf("size of c is %d\n", sizeof(c));
+  printf("size of bnd is %d\n", sizeof(bnd));
+  printf("size of wrk1 is %d\n", sizeof(wrk1));
+  printf("size of wrk2 is %d\n", sizeof(wrk2));
   cpu0= second();
   gosa= jacobi(nn);
   cpu1= second();

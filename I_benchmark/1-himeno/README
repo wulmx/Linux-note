@@ -1,10 +1,18 @@
+for there is 7 arrays as follow
+static float  p[MIMAX][MJMAX][MKMAX];
+static float  a[4][MIMAX][MJMAX][MKMAX],
+              b[3][MIMAX][MJMAX][MKMAX],
+              c[3][MIMAX][MJMAX][MKMAX];
+static float  bnd[MIMAX][MJMAX][MKMAX];
+static float  wrk1[MIMAX][MJMAX][MKMAX],
+              wrk2[MIMAX][MJMAX][MKMAX];
+# MIMAX=17 MJMAX=17 MKMAX=33	    1   MB (L1) -> # echo 33*17*17*4*(4+3+3+4)/1024/1024 | bc -l    = 0.51  MB   there has 0.5MB except array's memory
+# ssmall : 33,33,65		            3.9	MB (L2) -> # echo 33*33*65*4*(4+3+3+4)/1024/1024 | bc -l    = 3.78  MB
+# small : 65,65,129		            30	MB (L3) -> # echo 129*65*65*4*(4+3+3+4)/1024/1024 | bc -l   = 29.11 MB
+# midium: 129,129,257		        229	MB      -> # echo 129*129*257*4*(4+3+3+4)/1024/1024 | bc -l = 228.40MB
+# large : 257,257,513		       1810 MB      -> # echo 129*129*257*4*(4+3+3+4)/1024/1024 | bc -l = 1809.55MB
+# ext.large: 513,513,1025	    14406.6 MB      -> # echo 129*129*257*4*(4+3+3+4)/1024/1024 | bc -l = 14406.11MB
 
-# MIMAX=17 MJMAX=17 MKMAX=33	1	MB
-# ssmall : 33,33,65		3.78	MB
-# small : 65,65,129		29.11	MB
-# midium: 129,129,257		228.40	MB
-# large : 257,257,513		1809.55	MB
-# ext.large: 513,513,1025	14406.11MB
 ### Check to see if GCC is installed, please install GCC first if not installed
 which gcc
 

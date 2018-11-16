@@ -5,7 +5,7 @@ RM = /bin/rm
 PROG = bmt
 
 #CFLAGS = -O3 -DLARGE
-CFLAGS = -O3 -DMIDDLE
+CFLAGS = -O3 -DSMALL
 LDFLAGS = ${CFLAGS}
 
 all : ${PROG}

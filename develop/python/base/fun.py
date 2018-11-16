@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
+import time
 
+def print_time(func):
+    print(time.ctime())
+    return func
+# @ can transfer func1 into func2 as parameter
+@print_time
 def sum(a, b):
     return a+b
 

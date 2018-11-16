@@ -46,6 +46,8 @@
 46- seq
 47- cp
 48- monitor threads
+49- service difference
+50- type byte
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -249,6 +251,9 @@ if can't situation:
  - horizontal(-) split
  :sp $filename
 
+ - ctags/ptags code jump
+   ctrl + ]
+
  - :set ignorecase
  2. less
  -i	ignore case
@@ -256,6 +261,7 @@ if can't situation:
  -s	not output the blank line
  -S	drop the long section
  -x<4>	4 blank intead of tab key
+
  
 
 17) split 
@@ -576,3 +582,11 @@ if can't situation:
    # ps -Tf -p 2069
   3) pstree
    # pstree -l -a -A 20708
+
+49- service difference
+  # systemd-analyze plot
+
+50- type byte
+   int      -> 4 bytes
+   float    -> 4 bytes
+   double   -> 8 bytes
