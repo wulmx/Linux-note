@@ -86,6 +86,8 @@
    # cat /sys/block/sde/queue/minimum_io_size
 	4096 -------------------------------> b
    # cat /sys/block/sde/alignment_offset
+   
+   
 	0 ----------------------------------> c
    # cat /sys/block/sde/queue/physical_block_size
 	4096 -------------------------------> d		
