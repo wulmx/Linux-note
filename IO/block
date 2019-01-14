@@ -1,0 +1,19 @@
+1- note
+2- block io layer
+
+软件最小的逻辑可寻址单元叫做block，filesystem只能以多个block的方式访问block devices。
+因此block必须是sector的整数倍。同时block不得大于page size。
+因此一个page可以容纳一个或者多于一个block。
+VFS、mapping layer、文件系统采用block来管理data。
+
+2- block io layer
+  submit_bio()函数是文件系统的出口，也是Block IO Layer层的入口
+  ----VFS----
+  ----FS（ext4 etc.)----
+  ~~~~Page cache~~~~
+  ----Block IO -----
+  ~~~~Device mapping layer~~~
+  ----IO scheduler layer----
+  ----Block divice driver layer----
+  ----HD----------
+  
