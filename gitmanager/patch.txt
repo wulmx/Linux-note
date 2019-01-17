@@ -1,0 +1,9 @@
+1-patch
+
+1- patch
+
+   at same diretory
+   use patch
+   # patch -Np1 < diff.patch
+   unset patch
+   # patch -Rp1 < diff.patch
