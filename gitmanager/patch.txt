@@ -1,8 +1,10 @@
 1-patch
 
 1- patch
+  HEAD will include cached content
+  # git diff HEAD > diff.patch
 
-   at same diretory
+  at same diretory
    use patch
    # patch -Np1 < diff.patch
    unset patch

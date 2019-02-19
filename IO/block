@@ -1,5 +1,6 @@
 1- note
 2- block io layer
+3- I/O scheduler
 
 软件最小的逻辑可寻址单元叫做block，filesystem只能以多个block的方式访问block devices。
 因此block必须是sector的整数倍。同时block不得大于page size。
@@ -16,4 +17,12 @@ VFS、mapping layer、文件系统采用block来管理data。
   ----IO scheduler layer----
   ----Block divice driver layer----
   ----HD----------
+  
+3- I/O scheduler
+ 设计目的： 提高IO性能减少寻道所花费的时间
+ 通过手段：	sorting (排序）
+			merging（合并）
+ 管理对象： block devices
+			reqeust queue
+  
   

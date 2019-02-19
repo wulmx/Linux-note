@@ -48,6 +48,13 @@
 48- monitor threads
 49- service difference
 50- type byte
+51- filter blank line
+52- xargs
+53- ls
+54- uppercase <-> lowercase
+55- proxy(cntlm)
+56- pip
+
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -71,6 +78,11 @@
       # sed -i '/CFLAGS="DSMALL"/a\wlm' common.sh
      *3 insert "abc" at the first line of file 
       # sed '1s/.*/abc\n&/' file
+
+     *4 insert string at begin and end
+      sed 's/^/string/g' file
+      sed 's/$/string/g' file
+
 2) error message output
   - redirect the  error message output as normal message
     ... 2>&1 > test.txt
@@ -227,6 +239,9 @@ if can't situation:
 
   get hte dependencies package list
   # yum deplist pcp-system-tools
+
+  Another app is currently holding the yum lock; waiting for it to exit...
+  # rm -f /var/run/yum.pid
 
 15) how to see thread infomation of process
   # ps -ef f
@@ -590,3 +605,51 @@ if can't situation:
    int      -> 4 bytes
    float    -> 4 bytes
    double   -> 8 bytes
+
+51- filter blank line
+ grep -v "^$" 
+ cat 文件名 |tr -s ‘\n'
+ cat 文件名 |sed ‘/^$/d' 
+ cat 文件名 |awk ‘{if($0!=”")print}'
+ cat 文件名 |awk ‘{if(length !=0) print $0}'
+
+52- xargs
+   ref：
+    https://blog.csdn.net/Tommy_wxie/article/details/77715203
+
+  1) $ ls | xargs -t -i mv {} {}.bak
+  2) 一次用一个参数 -n1  
+    # neutron net-list | awk '{print $4}' | grep -vE "^$|name" | xargs -n1 neutron net-show
+  3） -p 操作具有可交互性，每次执行comand都交互式提示用户选择，当每次执行一个argument的时候询问一次用户
+
+  4）-i ，将xargs的每个参数一个一个赋值给{} -t 表示先打印
+    # neutron net-list | awk '{print $4}' | grep -vE "^$|name" | xargs -t -i neutron net-show {}
+53 - ls
+
+  1) print absolute path
+    # ls  -R | sed "s:^:`pwd`/:"    不行
+    or
+    # find  $PWD | xargs ls -ld
+    # find  $PWD -maxdepth 1  | xargs ls -ld
+
+54 - uppercase <-> lowercase
+  1) to uppercase
+   #  echo   "Accelerator" | tr 'a-z' 'A-Z'
+   or
+   # typeset -u a; a="Attribute"; echo $a
+
+  2) to uppercase
+   #  echo   "Accelerator" | tr 'A-Z' 'a-z'
+  or
+   # typeset -l a; a="Attribute";  echo $a
+
+55- proxy(cntlm)
+   ref: https://blog.csdn.net/SdustLiYang/article/details/7034974
+
+56- pip
+  specify the package version
+  # pip install pip==9.0.1
+
+
+
+  
