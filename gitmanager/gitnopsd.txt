@@ -19,6 +19,9 @@
 7- git pull
 8- git remote
 9- reback single file version
+10- delte proxy
+11- git  bash
+12- warning: LF will be replaced by CRLF in develop/python/wsgi/testroutes.py
 
 1. how to remove 
  how to remove file
@@ -86,4 +89,12 @@
 
 9- reback single file version
    # git  checkout 4184f985011ddcca08ae695bb9793794037a0b04 nova/api/openstack/compute/flavors_extraspecs.py
+
+10- delete proxy
+  # git config --global --unset https.proxy
+11- git bash
+  https://gist.github.com/vkyii/1079783/3e77453c05f6bcbce133fd0ba128686683f75bf8
+
+12- warning: LF will be replaced by CRLF in develop/python/wsgi/testroutes.py
+  # git config --global --get core.autocrlf
 

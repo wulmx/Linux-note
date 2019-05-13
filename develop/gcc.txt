@@ -1,6 +1,11 @@
 1. summary
 2. usage
 3. trouble-shooting
+4. gdb debug core dumped
+5. register info
+6. code rule
+7. makefile
+8. glib
 
 
 3. trouble-shooting
@@ -10,4 +15,47 @@
     /usr/bin/ld: cannot find -lc
   A: install glibc-static and glibc-utils can fix
     # yum install glibc-static  glibc-utils
-  
+
+4. gdb debug core dumped
+  1) 查看core的开关， 0 表示关了。
+     # ulimit -c
+  2） 设置core开关
+     # ulimit -c unlimited 表示不受限制。  -c 1024 表示大小限制1024KB
+      设置重启后会失效。
+  3） 运行程序后默认会在当前目录下生成core.84910文件84910表示进程号。
+
+5. register info
+  1） 64位寄存器相对32发生了以下变化
+      - %ebp -> %rbp  ebp仍然可用只是指向了%rbp的低32位
+      - 寄存器数量上也发生了变化增加了 r8 ~ r15,
+  2） 64位寄存器一共有16个64位寄存器
+	? %rax		作为函数返回值使用
+? %rsp		栈指针寄存器，指向栈顶
+? %rdi		函数第一参数
+? %rsi		函数第二参数
+? %rdx		函数第三参数
+? %rcx		函数第四参数
+? %r8		函数第五参数
+? %r9 		函数第六参数
+? %rbx，%rbp，%r12，%r13，%14，%15 用作数据存储，遵循被调用者使用规则，简单说就是随便用，调用子函数之前要备份它，以防他被修改
+? %r10，%r11 用作数据存储，遵循调用者使用规则，简单说就是使用之前要先保存原值
+3） rip 
+    返回地址
+    栈溢出漏洞制造攻击的原理就是利用修改rip的返回值来注入外部攻击
+
+6. code rule
+  1） 使用无符号数进行位移操作，有符号数可能会因为溢出而截断
+  2） 指定uintprt_t来表示指针整数类型，用于指针和整数类型的转换
+  3） 
+7. makefile
+  1） 打印日志
+  $(warning $(DVD_SERVICE)) // DVD_SerVICE是Makefile中的变量 
+
+8. glib
+   https://www.ibm.com/developerworks/cn/linux/l-glib/index.html
+   1) compile the program with the glib
+      # gcc  -o gt gthread.c  ``pkg-config --cflags --libs glib-2.0 gthread-2.0``
+      如程序中用到对象系统加入：  `pkg-config --cflags --libs gobject-2.0`
+      用到线程，编译时则加入：`pkg-config --cflags --libs gthread-2.0`
+      用到插件，编译时则加入：`pkg-config --cflags --libs gmoudle-2.0`
+ 

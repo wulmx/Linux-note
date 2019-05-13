@@ -1,0 +1,29 @@
+CC = gcc
+
+XX = g++
+CFLAGS = -Wall -O -g
+
+TARGET = ./myrbtree
+
+%.o: %.c
+
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o:%.cpp
+
+	$(XX) $(CFLAGS) -c $< -o $@
+
+
+# wildcard: generate a c&cpp file-list 
+SOURCES = $(wildcard *.c *.cpp)
+# patsubst mapping-change .c -> .o than saved as list
+OBJS = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SOURCES)))
+
+
+$(TARGET) : $(OBJS)
+	$(XX) $(OBJS) -o $(TARGET)
+
+	chmod a+x $(TARGET)
+
+clean:
+	rm -rf *.o helloworld

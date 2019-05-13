@@ -14,6 +14,8 @@
       otherwise, has the nobody right.
      -root_squash
 
+     simple ex:
+     /sda6/wulm  *(rw)
   3) # systemctl start nfs-server.service
 
   4) # exportfs

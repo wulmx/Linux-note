@@ -46,7 +46,8 @@ int main(int args, char *argv[])
      * strcat("wlm", "1")  X   for must define variable to add other string
      * strcat(src1,  "1")  O
      * strcat(src1, src2)  O
-     *
+     * avoid buffer overflow, don't use strcpy/strcat
+	 * instead, wrap strncpy/strncat/snprintf/memcpy
      */
     char concatenate[40];
     char concatenate_1[20]="wlm";
@@ -55,7 +56,8 @@ int main(int args, char *argv[])
     printf("%s\n", concatenate);
     
     /* strcpy 
-     * 
+     * avoid buffer overflow, don't use strcpy/strcat
+	 * instead, wrap strncpy/strncat/snprintf/memcpy
      */
     char dest[100];
     char *src1;
@@ -67,6 +69,8 @@ int main(int args, char *argv[])
     strcpy(dest, strcat(src1, src2));
 
     printf("Final copied string : %s\n", dest);
+	
+	
 
     /* 
      * pmsprintf
@@ -79,3 +83,22 @@ int main(int args, char *argv[])
     sprintf(pm1, "cpu %d", cpu);
     printf("%s %s \n", pm, pm1);
 }
+
+char * strncat_s(char * dest, char * src, size_t n, size_t total_buf_size)
+{
+    if(strlen(dest)+n>total_buf_size-1){
+
+              n=total_buf_size-1-strlen(dest);
+
+    }
+    return strncat(dest, src, n);
+}
+
+void *memcpy_s(void *dest, const void *src, size_t n, size_t left_buf_size){
+    /*如果buffer溢出，则截断，copy满为止*/
+    if(n> left_buf_size){
+        n= left_buf_size;
+    }
+    return memcpy (dest, src, n);
+}
+
