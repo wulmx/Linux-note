@@ -22,6 +22,8 @@
 10- delte proxy
 11- git  bash
 12- warning: LF will be replaced by CRLF in develop/python/wsgi/testroutes.py
+13- 强制拉去最新代码
+14- error: RPC failed; curl 56 Failure when receiving data from the peer
 
 1. how to remove 
  how to remove file
@@ -98,3 +100,21 @@
 12- warning: LF will be replaced by CRLF in develop/python/wsgi/testroutes.py
   # git config --global --get core.autocrlf
 
+13- 强制拉去最新代码
+   在使用Git的过程中，有些时候我们只想要 git 服务器中的最新版本的项目，对于本地的项目中修改不做任何理会，就需要用到 Git pull 的强制覆盖，具体命令如下：
+
+ # git fetch --all
+ # git reset --hard origin/master 
+ # git pull
+
+14- error: RPC failed; curl 56 Failure when receiving data from the peer
+   解决及加速git
+   httpBuffer加大? ??
+   # git config --global http.postBuffer 524288000
+   压缩配置
+   # git config --global core.compression -1? ??
+   修改配置文件
+   # export GIT_TRACE_PACKET=1
+   # export GIT_TRACE=1
+   # export GIT_CURL_VERBOSE=1
+   以上配置文件修改，也可以大幅度提升git 克隆速度

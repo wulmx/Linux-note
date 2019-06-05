@@ -6,6 +6,7 @@
 6. undefined reference to `stdscr' (solution: -l curses)
 7. gdb
 8. main function
+9. __attribute__((constructor))
 
 1. volatile
    eg: volatile unsigned long irq_err_count;
@@ -43,6 +44,8 @@
       # gcc -o test -g test.c
    2) debug the programe with parameter
       set args $parameter
+   3） 如果需要调试子进程，在启动gdb后：
+      (gdb) set follow-fork-mode child
 
 8. main function
    1)  main function's parameter have 4 types as follow
@@ -55,3 +58,7 @@
      argv[1]  ----> the first parameter
      argv[2]  ----> the second parameter
      ....
+
+9. __attribute__((constructor))
+  constructor在main之前执行的语句，
+  destructor让系统在main()函数退出或者调用了exit()之后,调用我
