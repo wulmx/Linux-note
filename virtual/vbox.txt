@@ -1,0 +1,8 @@
+1) install addition tool can share disk with host
+   if can't install additional tool.
+   # eject /dev/sr0
+   # mount /dev/sr0 /dev/cdrom
+   https://blog.csdn.net/boybruce/article/details/18655981
+   
+   resolve it then
+   # mount -t vboxsf io  /mnt/io
