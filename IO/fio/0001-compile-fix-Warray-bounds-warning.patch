@@ -1,0 +1,26 @@
+From bb2257b23d6064b99a6cd98630bb86414f8498bd Mon Sep 17 00:00:00 2001
+From: wulm <398776277@qq.com>
+Date: Tue, 25 Jun 2019 02:41:35 -0400
+Subject: [PATCH] compile: fix -Warray-bounds warning
+
+---
+ init.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/init.c b/init.c
+index 7383427..bf687dd 100644
+--- a/init.c
++++ b/init.c
+@@ -1,6 +1,9 @@
+ /*
+  * This file contains job initialization and setup functions.
+  */
++#if (__GNUC__ == 4 && __GNUC_MINOR__ <= 8)
++#pragma GCC diagnostic ignored "-Warray-bounds"
++#endif
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+-- 
+1.8.3.1
+
