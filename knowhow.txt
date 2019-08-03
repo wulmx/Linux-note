@@ -671,7 +671,10 @@ if can't situation:
       在vimrc中配置好了快捷键
 nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
 VIM中操作时，按下 CTRL+\+g 就是没作用。之前遇到过也解决了但是没记录，这次又尝试好半天，原来是先按ctrl不放，按\键，同时放开，快速按g键！
-
+   4) dos2unix can't change format
+     - sed -i "s/\r//" ~/.vimrc
+     or
+     - set ff=unix
 
 
 
