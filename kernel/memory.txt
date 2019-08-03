@@ -1,6 +1,7 @@
 1- meminfo   /proc/meminfo.c
 2- cache
-
+3- kmalloc/vmalloc/malloc
+4- high memory
 
 1. meminfo
   -cached
@@ -14,3 +15,19 @@
 	sum(swapper_spaces[i].nrpages):
  
     
+3- kmalloc/vmalloc/malloc
+  kmalloc
+  1) continuation physic-memory address
+  2) memory is between 3GB ~ hign-memory
+
+  vmalloc
+  1) continuation virtual-mem address, but phy-mem may not be continue
+  2) memory is between VMALLOC_START～4GB
+    
+
+
+  
+4- high memory
+  1) 3GB-4GB is kernel memory
+  2) 896MB-1GB is hign-memory
+  3) high_memory = (void *) __va(max_low_pfn * PAGE_SIZE)
