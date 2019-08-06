@@ -1,0 +1,32 @@
+1. zombie process and defunct process
+
+
+1. zombie process and defunct process
+   zombie process: ( ps ->  snat is Z)
+     1) the child process has dead but has not been reaped. aslo the kill signal has no efect on it.
+     2) process has exited by exit-syscall, and release the resource.
+     3) still has process description , task_struct has not been recyled. normal        is's recyled by wait-syscall
+     4) after parent-process has been killed, child will become defunct process
+     5) when thread-group-leader(main thread) exited it will send SIGCHILD to  p	arent-process. parent process will no release child-process until thread-group is null.
+
+     aio is example. can't exit_aio (wait_for_completion
+
+   defunct process:
+     parent process has dead, child-process is adopted by no.1 p
+     rocess.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
