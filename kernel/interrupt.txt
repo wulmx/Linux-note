@@ -1,0 +1,158 @@
+1. soft irq
+   generate the exception when run cpu-instructions
+   1) can't be preempted by other soft irq
+   2) soft irq type
+	enum {
+	    HI_SOFTIRQ = 0, /* 优先级高的tasklets */
+	    TIMER_SOFTIRQ, /* 定时器的下半部 */
+	    NET_TX_SOFTIRQ, /* 发送网络数据包 */
+	    NET_RX_SOFTIRQ, /* 接收网络数据包 */
+	    BLOCK_SOFTIRQ, /* BLOCK装置 */
+	    BLOCK_IOPOLL_SOFTIRQ,
+	    TASKLET_SOFTIRQ, /* 正常优先级的tasklets */
+	    SCHED_SOFTIRQ, /* 调度程序 */
+	    HRTIMER_SOFTIRQ, /* 高分辨率定时器 */
+	    RCU_SOFTIRQ, /* RCU锁定 */
+	    NR_SOFTIRQS /* 10 */
+	}
+     3)  fuction
+         registe soft irq: open_softirq
+	 call soft irq   : raise_softirq
+     4) ksoftirqd operate soft irq do_softirq()
+        
+
+	asmlinkage void do_softirq(void)
+	{
+	    __u32 pending;
+	    unsigned long flags;
+	 
+	    /* 如果当前已处于硬中断或软中断中，直接返回 */
+	    if (in_interrupt()) 
+	        return;
+	 
+	    local_irq_save(flags);
+	    pending = local_softirq_pending();
+	    if (pending) /* 如果有激活的软中断 */
+	        __do_softirq(); /* 处理函数 */
+	    local_irq_restore(flags);
+	}
+
+        /* We restart softirq processing MAX_SOFTIRQ_RESTART times,
+	 * and we fall back to softirqd after that.
+	 * This number has been established via experimentation.
+	 * The two things to balance is latency against fairness - we want
+	 * to handle softirqs as soon as possible, but they should not be
+	 * able to lock up the box.
+	 */
+	asmlinkage void __do_softirq(void)
+	{
+	    struct softirq_action *h;
+	    __u32 pending;
+	    /* 本函数能重复触发执行的次数，防止占用过多的cpu时间 */
+	    int max_restart = MAX_SOFTIRQ_RESTART;
+	    int cpu;
+	 
+	    pending = local_softirq_pending(); /* 激活的软中断位图 */
+	    account_system_vtime(current);
+	    /* 本地禁止当前的软中断 */
+	    __local_bh_disable((unsigned long)__builtin_return_address(0), SOFTIRQ_OFFSET);
+	    lockdep_softirq_enter(); /* current->softirq_context++ */
+	    cpu = smp_processor_id(); /* 当前cpu编号 */
+	 
+	restart:
+	    /* Reset the pending bitmask before enabling irqs */
+	    set_softirq_pending(0); /* 重置位图 */
+	    local_irq_enable();
+	    h = softirq_vec;
+	    do {
+	        if (pending & 1) {
+	            unsigned int vec_nr = h - softirq_vec; /* 软中断索引 */
+	            int prev_count = preempt_count();
+	            kstat_incr_softirqs_this_cpu(vec_nr);
+	 
+	            trace_softirq_entry(vec_nr);
+	            h->action(h); /* 调用软中断的处理函数 */
+	            trace_softirq_exit(vec_nr);
+	 
+	            if (unlikely(prev_count != preempt_count())) {
+	                printk(KERN_ERR "huh, entered softirq %u %s %p" "with preempt_count %08x,"
+	                    "exited with %08x?\n", vec_nr, softirq_to_name[vec_nr], h->action, prev_count,
+	                    preempt_count());
+	            }
+	            rcu_bh_qs(cpu);
+	        }
+	        h++;
+	        pending >>= 1;
+	    } while(pending);
+	 
+	    local_irq_disable();
+	    pending = local_softirq_pending();
+	    if (pending & --max_restart) /* 重复触发 */
+	        goto restart;
+	 
+	    /* 如果重复触发了10次了，接下来唤醒ksoftirqd/n内核线程来处理 */
+	    if (pending)
+	        wakeup_softirqd(); 
+	 
+	    lockdep_softirq_exit();
+	    account_system_vtime(current);
+	    __local_bh_enable(SOFTIRQ_OFFSET);
+ 	}
+
+    5) ksoftirqd
+       kernel will wakeup some ksoftirqd to operate the soft-irq
+       usually, it's priority is not high (nice is 19) .
+
+	static int run_ksoftirqd(void *__bind_cpu)
+	{
+	    set_current_state(TASK_INTERRUPTIBLE);
+	    current->flags |= PF_KSOFTIRQD; /* I am ksoftirqd */
+	 
+	    while(! kthread_should_stop()) {
+	        preempt_disable();
+	 
+	        if (! local_softirq_pending()) { /* 如果没有要处理的软中断 */
+	            preempt_enable_no_resched();
+	            schedule();
+	            preempt_disable():
+	        }
+	 
+	        __set_current_state(TASK_RUNNING);
+	 
+	        while(local_softirq_pending()) {
+	            /* Preempt disable stops cpu going offline.
+	             * If already offline, we'll be on wrong CPU: don't process.
+	             */
+	             if (cpu_is_offline(long)__bind_cpu))/* 被要求释放cpu */
+	                 goto wait_to_die;
+	 
+	            do_softirq(); /* 软中断的统一处理函数 */
+	 
+	            preempt_enable_no_resched();
+	            cond_resched();
+	            preempt_disable();
+	            rcu_note_context_switch((long)__bind_cpu);
+	        }
+	 
+	        preempt_enable();
+	        set_current_state(TASK_INTERRUPTIBLE);
+	    }
+	 
+	    __set_current_state(TASK_RUNNING);
+	    return 0;
+	 
+	wait_to_die:
+	    preempt_enable();
+	    /* Wait for kthread_stop */
+	    set_current_state(TASK_INTERRUPTIBLE);
+	    while(! kthread_should_stop()) {
+	        schedule();
+	        set_current_state(TASK_INTERRUPTIBLE);
+	    }
+	 
+	    __set_current_state(TASK_RUNNING);
+	    return 0;
+	}
+		 
+	
+2. hard irq
