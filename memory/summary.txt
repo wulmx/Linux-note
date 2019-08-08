@@ -4,6 +4,7 @@
 4- buddy
 5- HugePage
 6- KSM
+7- buff/cache (free)
 
 1. hugepage
   - set
@@ -11,7 +12,7 @@
 http://linuxperf.com/?p=142
 
 
-2. THP
+2. THP (anonHugePages)
   - https://access.redhat.com/solutions/46111
   - impact
     https://alexandrnikitin.github.io/blog/transparent-hugepages-measuring-the-performance-impact/
@@ -64,3 +65,8 @@ http://linuxperf.com/?p=142
 6. KSM (Kernel Same-page Merging)
    to find the number of pages that are merged,
    look at the /sys/kernel/mm/ksm/pages_shared.
+
+7- buff/cache (free)
+   1)  pagecache and buffcache
+       page cache -> filesystem  file's data will cached to page cache
+       buff cache -> block device  block device's data will cached to buff cache
