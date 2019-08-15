@@ -1,5 +1,5 @@
 1. memory location
-
+2. pointer
 
 
 
@@ -31,3 +31,11 @@
  |     after programer was closed.
  |    * string constant value "123456" etc.
  |    * code segment
+
+2. pointer
+  P2	 P1	a
+  &p1 -> &a -> 100
+  int a = 100;
+  int *p1 = &a;
+  int **p2= &p1;
+  int ***p3=&p2;
