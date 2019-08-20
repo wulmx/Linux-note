@@ -24,6 +24,7 @@
 12- warning: LF will be replaced by CRLF in develop/python/wsgi/testroutes.py
 13- 强制拉去最新代码
 14- error: RPC failed; curl 56 Failure when receiving data from the peer
+15- remove middle-commit (multi-commit)
 
 1. how to remove 
  how to remove file
@@ -118,3 +119,11 @@
    # export GIT_TRACE=1
    # export GIT_CURL_VERBOSE=1
    以上配置文件修改，也可以大幅度提升git 克隆速度
+
+15- remove middle-commit (multi-commit)
+   1) search want-delted commit_id, and privios-id
+     # git log
+   2) git rebase -i privios-id
+      *** -> drop
+   3) git pull
+   4) git push

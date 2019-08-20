@@ -598,7 +598,11 @@ if can't situation:
   2) ps
    # ps -Tf -p 2069
   3) pstree
+    get current thread num
+   # pstree -p | wc -l
+
    # pstree -l -a -A 20708
+     
 
 49- service difference
   # systemd-analyze plot

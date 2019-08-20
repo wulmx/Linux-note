@@ -1,0 +1,110 @@
+1. spinlock
+2. rcu
+
+1. spinlock
+   1) busy-waiting
+      advantage is can avoid context-switch
+      disadvantage is consume resource
+   2) cpu can't prempted by kernel also can't sleep. otherwise will dead-lock
+      for it's can prempted by interrupt. if code hase spinlock, it's must not called by softirq. otherwise it will be dead-lock.
+
+      ex as follow:
+      kswapd is recyle the mem by  __shrink_dcache_sb with spinlock.
+      but cpu is prempted by bnx2x's soft irq. so dead-lock
+
+      crash64> bt -c 2
+	PID: 47     TASK: ffff880230c78400  CPU: 2   COMMAND: "kswapd0"
+	 #0 [ffff88023fa46e40] crash_nmi_callback at ffffffff81024bcf
+	 #1 [ffff88023fa46e50] notifier_call_chain at ffffffff8146d6e7
+	 #2 [ffff88023fa46e80] __atomic_notifier_call_chain at ffffffff8146d72d
+	 #3 [ffff88023fa46e90] notify_die at ffffffff8146d77d
+	 #4 [ffff88023fa46ec0] default_do_nmi at ffffffff8146ad13
+	 #5 [ffff88023fa46ee0] do_nmi at ffffffff8146ae08
+	 #6 [ffff88023fa46ef0] restart_nmi at ffffffff8146a295
+	    [exception RIP: _raw_spin_lock+21]
+	    RIP: ffffffff81469795  RSP: ffff88023fa43738  RFLAGS: 00000283
+	    RAX: 0000000000002b41  RBX: ffff88023337fc00  RCX: 00000000000000d0
+	    RDX: 0000000000002b3f  RSI: ffff88023fa437d4  RDI: ffffffff81a02700
+	    RBP: 0000000000000001   R8: 0000000000000000   R9: ffff88023fa43740
+	    R10: ffff88023ffd95b8  R11: ffff88023ffd9520  R12: ffff88023337fc00
+	    R13: 0000000000000001  R14: ffff88023337fce0  R15: 0000000000000008
+	    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+	--- <NMI exception stack> ---
+	 #7 [ffff88023fa43738] _raw_spin_lock at ffffffff81469795
+	 #8 [ffff88023fa43738] __shrink_dcache_sb at ffffffff81176b36
+	 #9 [ffff88023fa437b8] prune_dcache at ffffffff81176d82
+	#10 [ffff88023fa43808] shrink_dcache_memory at ffffffff81176e88
+	#11 [ffff88023fa43818] shrink_slab at ffffffff81110874
+	#12 [ffff88023fa438b8] do_try_to_free_pages at ffffffff81111c43
+	#13 [ffff88023fa43928] try_to_free_pages at ffffffff81112072
+	#14 [ffff88023fa439c8] __alloc_pages_slowpath at ffffffff81104a6f
+	#15 [ffff88023fa43af8] __alloc_pages_nodemask at ffffffff81105079
+	#16 [ffff88023fa43b98] alloc_pages_current at ffffffff8113da6e
+	#17 [ffff88023fa43bd8] bnx2x_alloc_rx_sge at ffffffffa055d484 [bnx2x]
+	#18 [ffff88023fa43c18] bnx2x_fill_frag_skb at ffffffffa055d75e [bnx2x]
+	#19 [ffff88023fa43cb8] bnx2x_tpa_stop at ffffffffa055da86 [bnx2x]
+	#20 [ffff88023fa43d18] bnx2x_rx_int at ffffffffa056084b [bnx2x]
+	#21 [ffff88023fa43e48] bnx2x_poll at ffffffffa05613b4 [bnx2x]
+	#22 [ffff88023fa43e88] net_rx_action at ffffffff813adada
+	#23 [ffff88023fa43ed8] __do_softirq at ffffffff8106925f
+	#24 [ffff88023fa43f48] call_softirq at ffffffff81472a5c
+	#25 [ffff88023fa43f60] do_softirq at ffffffff81004695
+	#26 [ffff88023fa43f90] smp_apic_timer_interrupt at ffffffff81026fd8
+	#27 [ffff88023fa43fb0] apic_timer_interrupt at ffffffff814721f3
+	--- <IRQ stack> ---
+	#28 [ffff880230c7bad8] apic_timer_interrupt at ffffffff814721f3
+	    [exception RIP: _raw_spin_trylock]
+	    RIP: ffffffff81469750  RSP: ffff880230c7bb88  RFLAGS: 00000246
+	    RAX: ffff8802c63aac40  RBX: ffffffff81469c0e  RCX: ffff8802c63aad00
+	    RDX: ffff880230c7bfd8  RSI: ffff880230c78400  RDI: ffff8802c63aac18
+	    RBP: ffff8802c63aac18   R8: ffff880230c7a000   R9: 0000000000000000
+	    R10: ffff88023fa509a0  R11: ffffffff81051970  R12: ffffffff814721ee
+	    R13: ffffffff81051970  R14: ffffffff81469c0e  R15: ffff880230c7bb80
+	    ORIG_RAX: ffffffffffffff10  CS: 0010  SS: 0018
+	#29 [ffff880230c7bb88] __shrink_dcache_sb at ffffffff81176bec
+	#30 [ffff880230c7bc08] prune_dcache at ffffffff81176d82
+	#31 [ffff880230c7bc58] shrink_dcache_memory at ffffffff81176e88
+	#32 [ffff880230c7bc68] shrink_slab at ffffffff81110874
+	#33 [ffff880230c7bd08] kswapd_shrink_zone at ffffffff81111086
+	#34 [ffff880230c7bd68] balance_pgdat at ffffffff811115de
+	#35 [ffff880230c7be78] kswapd at ffffffff81111980
+	#36 [ffff880230c7bee8] kthread at ffffffff81084946
+	#37 [ffff880230c7bf48] kernel_thread_helper at ffffffff81472964
+    3) 
+
+2. rcu (Read-Copy-Update)
+   1) Read -> the data that procted by RCU
+   2) Copy-Update -> copy a data than update, modify the orgin data until grace period.
+   3) suitable for lots of read and less write 
+     
+3. systemv singal and posix signal
+   systemv singal
+   1) managed by kernel
+   2) allocate : semget()   -> ipcs -s
+   3) delete signal:  semctl()    -> ipcrm -s
+   4) has ID is flag
+   5) PV   semop
+   6) sys-call   semget/semctl/semop
+   
+
+   PV    P:  allocate an resource
+   	 V:  release a resource
+
+   posix signal is divided 2 type  
+   named semaphore
+   1) name is flag
+   2) create or open   sem_open()
+   3) /dev/shm 
+   unnameed semaphore
+   1) is base on user memory
+   2) create         sem_init
+   3) is used between thread-tread   parent-child
+   
+   PV  sem_wait   sem_post
+   strace 's  show:   sys-call is futex for should be call librt.*** lib
+
+4. futex( fast userspace mutex)
+   1) include user space(hase competition) code and kernel code(no competition
+   2) 
+
+

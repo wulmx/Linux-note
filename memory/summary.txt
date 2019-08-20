@@ -5,6 +5,8 @@
 5- HugePage
 6- KSM
 7- buff/cache (free)
+8- kernel dynamic memory
+9- /proc/meminfo
 
 1. hugepage
   - set
@@ -70,3 +72,49 @@ http://linuxperf.com/?p=142
    1)  pagecache and buffcache
        page cache -> filesystem  file's data will cached to page cache
        buff cache -> block device  block device's data will cached to buff cache
+
+8- kernel dynamic memory
+   1) alloc_pages/_get_free_page      unit is page     alloc_pages used memory difficut to track.
+   2) vmalloc              continue-virtual-address memory by unit of byte     
+   3) slab allocator
+   4) kmalloc              continue-physic-address memory by unit of byte
+
+9- /proc/meminfo
+ KERNEL
+  1) Slab = SReclaimable + SUnreclaim  
+  2) VmallocUsed = grep vmalloc /proc/vmallocinfo | awk '{total+=$2}; END {print total}'
+     because kernel module alocate memory by vmalloc(kernel/module.c -> module_malloc -> vmalloc), so vmalloc include
+     kernel module memory.
+  3) HardwareCorrupted  deleted memory-page for memory hardware corruted.  mm/memory-failure.c: memory_failure().
+  4) PageTables     virtual <-> physic,  along with allocated memory is more and more, PageTables will grow.
+  5) KernelStack    every thread has 16KB kernelstack memory, but can't access directly, otherwise use syscall/trap/exception. 
+  6) Bounce         old-device can only access low-memory.  when IO the device, it will bounce buffering.
+ USER
+  1) Hugepages     is's not included in RSS/PSS/LRU Active/Inactive/cache/buffer.
+     shmget/shmat can allocate Hugepage by SHM_HUGETLB flag.  mmap -> MAP_HUGETLB.
+    -HugePages_Total  /proc/sys/vm/nr_hugepages vm.nr_hugepages
+    -HugePages_Rsvd
+    -HugePages_Free
+  2) AnonHugePages  THP(Transparent HugePages)
+     for shared-memory and tmpfs will not use THP, so IPC will not use AnonHugePages.
+     AnonHuagePages(meminfo) = all anonhugepages of /proc/pid/smaps '
+     # grep AnonHugePages /proc/[1-9]*/smaps | awk '{total+=$2}; END {print total}'
+        2918400
+     # grep AnonHugePages /proc/meminfo
+       AnonHugePages:   2881536 kB
+  3) LRU    kernel page-frame reclaiming algorithm.
+     Inactive(anon) <-> LRU_INACTIVE_ANON 
+     Active(anon) <-> LRU_ACTIVE_ANON 
+     Inactive(file) <-> LRU_INACTIVE_FILE 
+     Active(file) <-> LRU_ACTIVE_FILE 
+     Unevictable  <-> LRU_UNEVICTABLE
+     
+     active:  used recently
+     inactive: not used for long time, it's priority-recycled
+     anon (anonymous pages) :  process's stack heap
+     file (file-backed pages):  process's code and mapping-file etc. when 
+
+     
+     
+     
+
