@@ -339,7 +339,7 @@ if can't situation:
     # awk '$3=$3"\t******"  file.txt
     # awk '{if(/^Linux/ || !NF) print; else{$1=$1"\tAM"; print}}' $1
 
-  - NR		number
+  - NR		record count, lines
   - FNR		file number, when new file is operated, count from 1
   - NF		number of fields
   - $0		all of columns

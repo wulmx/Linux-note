@@ -7,6 +7,7 @@
 7- buff/cache (free)
 8- kernel dynamic memory
 9- /proc/meminfo
+10-VSS/RSS/PSS/USS
 
 1. hugepage
   - set
@@ -111,10 +112,93 @@ http://linuxperf.com/?p=142
      
      active:  used recently
      inactive: not used for long time, it's priority-recycled
-     anon (anonymous pages) :  process's stack heap
-     file (file-backed pages):  process's code and mapping-file etc. when 
+     anon (anonymous pages) :  process's stack heap.   swap-out to disk when memory is not enough.(use swap)
+     file (file-backed pages):  process's code and mapping-file etc. can page-out to disk directly when mem is not enough (not use swap).
+     unevictable :   can't pageout/swapout pages. included VM_LOCKED/SHM_LOCK page and ramfs.   https://www.kernel.org/doc/Documentation/vm/unevictable-lru.txt
+                     UNEVICTABLE PAGE LIST is desinged for hide thes pages from vmscan, for these can't swapout pages will be scan everytime(affect performance).
+  4) Shmem
+     it's base on tmpfs, so it's not belong to anonymous pages. so it's belong to Cached(ex. page cache) or Mapped(shmem was attached)
+     but it has not really disk file. so it will swap-out.  although it's Inactive(anon)/Active(anon)/Unevictable ,bu it's not anonpages.
 
-     
-     
-     
+     - shared memory
+       1. SysV sharem memory[shmget etc.]
+       2. POSIX shared memory[shm_open etc.]
+       3. shared anonymous mmap[mmap(...MAP_ANONYMOUS|MAP_SHARED...)]
 
+     - tmpfs and devtmpfs
+       items of /dev/ iaso is shmem
+       if dev was not closed before delete, it's mem will not release, can mornitor it by  “lsof -a +L1 /<mount_point>” 
+       # lsof -a +L1 /run
+        COMMAND   PID      USER   FD   TYPE DEVICE SIZE/OFF NLINK      NODE NAME
+        httpd    3773      root    9w   REG   0,18        0     0 834085804 /run/wsgi.3773.0.1.lock (deleted)
+        httpd   12311    wwwrun    9w   REG   0,18        0     0 834085804 /run/wsgi.3773.0.1.lock (deleted)
+        httpd   12476    wwwrun    9w   REG   0,18        0     0 834085804 /run/wsgi.3773.0.1.lock (deleted)
+        httpd   12710    wwwrun    9w   REG   0,18        0     0 834085804 /run/wsgi.3773.0.1.lock (deleted)
+        httpd   17256    wwwrun    9w   REG   0,18        0     0 834085804 /run/wsgi.3773.0.1.lock (deleted)
+  5) AnonPages
+     - page cache's page(cached) is file-backed pages, is not anon pages. Cached and anon-page is not overlapping.
+     - shared memory is not belong to anon-pages, belong to cached
+     - mmap private anon-pages is belong to Anon-pages, but mmap shared anonmymous pages is Cached(file-backed pages).
+     - Anon-pages is coexist with process, Anon-pages will releas alone with process-exited. 
+     - Anon-pages include THP's anon-mem in old kernel.  THP's mem is included in latedst kernel(5.3)
+        #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+        show_val_kb(m, "AnonHugePages:  ",
+             global_node_page_state(NR_ANON_THPS) * HPAGE_PMD_NR);
+
+  6) Mapped
+     file-backed pages is Mapped. it's a part of page-cached(all mapped pages).
+     Theoretically, all process's PSS = Mapped + AnonPages
+        # ps -eo pid,%cpu,%mem,rss,args,comm | awk '{ if(NR >1 ) total += $4;} END { print total;}'
+        261462868
+        # cat /proc/meminfo  | grep -E "Map|AnonPages"
+        AnonPages:      251966712 kB
+        Mapped:           564084 kB
+        
+  7) Cached
+     Cached(page cache)include all of the file-backed pages. 
+     Cached > Mapped   Cached = Mapped + unmapped
+     Cached include tmpfs's file(not in hard-disk)  - POSIX/SysV shared memory and shared anonymous mmap.
+     Cached and SwapCached is not overlaping.  when Swap in/out, it's SwapCached, other is Cached.
+    
+  8) SwapCached
+    anonymous pages and shared mem(tmpfs is file-backed-page,but has no hard-disk-file) need to use swap.
+     shrink_page_list -> add_to_swap -> add_to_swap_cache -> set_page_dirty -> try_to_ummap -> pageout -> try_to_free_swap
+  
+  9) Mlocked
+    memory size locked by syscall of mlock().  for can't pageout/swapout, so it's Unevictable memory.
+    it's not independent, maybe overlap with LRU Unevictable，AnonPages，Shmem，Mapped etc.
+ 
+  10) Buffers
+    the memory occupied by Block-device.
+    direct-IO device/fs metadata SuperBlock-using-pages
+    overlap with LRU Active/Iactive(file)
+    filemap.c: do_generic_file_read > add_to_page_cache_lru
+    
+  11) DirectMap
+   is TLB(Translation Lookaside Buffer)'s metric. TLB's cpu-cache.   CPU support pages that's more than 4K as 2M/1G,
+   it can  reduce the mapping-count.
+     
+  13) Dirty
+    it's not include all of dirty.
+    os dirty = Dirty + NFS_unstable + writeback
+    NFS_unstable: is send to NFS server but not write to disk's page-cache yet.
+    writeback is writing to disk's page-cache.
+
+  ref; http://linuxperf.com/?p=142
+
+  formula
+  1) 【Active(anon)+Inactive(anon)】 = 【AnonPages + Shmem】
+  2) 【Active(file) + Inactive(file) + Shmem + mlock_file】== 【Cached + Buffers】
+  3)  kernel mem =【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】
+      X is alloc_pages/__get_free_page 
+  4)  LRU MemTotal        = MemFree +【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】+【Active + Inactive + Unevictable + (HugePages_Total * Hugepagesize)】
+  5)  Page chche MemTotal = MemFree +【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】+【Cached + AnonPages + Buffers + (HugePages_Total * Hugepagesize)】
+  6)  RSS/PSS MemTotal    = MemFree +【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】+【ΣPss + (Cached – mapped) + Buffers + (HugePages_Total * Hugepagesize)】
+
+     VmallocUsed = # grep vmalloc /proc/vmallocinfo | awk '{total+=$2}; END {print total}'
+  
+10- VSS >= RSS >= PSS >= USS
+  VSS- Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
+  RSS- Resident Set Size 实际使用物理内存（包含共享库占用的内存）
+  PSS- Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+  USS- Unique Set Size 进程独自占用的物理内存（不包含共享库占用的内存）
