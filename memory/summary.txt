@@ -198,6 +198,10 @@ http://linuxperf.com/?p=142
      VmallocUsed = # grep vmalloc /proc/vmallocinfo | awk '{total+=$2}; END {print total}'
   
 10- VSS >= RSS >= PSS >= USS
+   # grep Rss /proc/[1-9]*/smaps | awk '{total+=$2}; END {print total}'
+    252773396
+   # grep Pss /proc/[1-9]*/smaps | awk '{total+=$2}; END {print total}'
+    244138253
   VSS- Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
   RSS- Resident Set Size 实际使用物理内存（包含共享库占用的内存）
   PSS- Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）

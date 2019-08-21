@@ -1,0 +1,714 @@
+#!/usr/bin/awk -f 
+#
+# This tool is used for parsing memory log info
+# ./getmem -- -l -m
+# formula
+#  1) 【Active(anon)+Inactive(anon)】 = 【AnonPages + Shmem】
+#  2) 【Active(file) + Inactive(file) + Shmem + mlock_file】== 【Cached + Buffers】
+#  3)  kernel mem =【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】
+#      X is alloc_pages/__get_free_page
+#  4)  LRU MemTotal        = MemFree +【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】+【Active + Inactive + Unevictable + (HugePages_Total * Hugepagesize)】
+#  5)  Page chche MemTotal = MemFree +【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】+【Cached + AnonPages + Buffers + (HugePages_Total * Hugepagesize)】
+#  6)  RSS/PSS MemTotal    = MemFree +【Slab+ VmallocUsed + PageTables + KernelStack + HardwareCorrupted + Bounce + X】+【ΣPss + (Cached – mapped) + Buffers + (HugePages_Total * Hugepagesize)】
+#  # grep Rss /proc/[1-9]*/smaps | awk '{total+=$2}; END {print total}'
+
+
+function usage()
+{
+	print ""
+	print "Usage:   debug [-- OPTION] [FILE]"
+	print ""
+	print "[OPTION]"
+	print "    -h       --help"
+	print "    -v       --version"
+	print "    -m       --mem"
+	print "    -l       --local"
+	print ""
+	print "[FILE]"
+	print "    *.tgz    gzip file"
+	print "    *.tar    tar file"
+	print "    *.bz2    bz2 file"
+	print "    *.txt    txt file"
+	print ""
+	print "Example:"
+	print "    1. parse default tgz file in /OSM/coffer_log/"
+	print "    ./debug"
+	print ""
+	print "    2. parse text file"
+	print "    ./debug log.txt"
+	print ""
+	print "    3. parse gzip file"
+	print "    ./debug log.txt.tgz"
+	print ""
+	print "    4. help infomation"
+	print "    ./debug -- -h"
+	print ""
+	print "    5. version infomation"
+	print "    ./debug -- -v"
+	print ""
+	print "    6. get meminfo from local system "
+	print "    ./debug -- -l -m"
+	print ""
+}
+
+function arg_option_process(opt, len)
+{
+	for (i = 0; i < len; i++) {
+		if (opt[i] == "-v" || opt[i] == "--version") {
+			print "version 0.1"
+			return 1
+		} else if (opt[i] == "--") {
+			continue
+		} else if (opt[i] == "-h" || opt[i] == "--help") {
+			usage()
+			return 1	
+		} else if (opt[i] == "-m" || opt[i] == "--mem") {
+			debug_mem = 1
+		} else if (opt[i] == "-l" || opt[i] == "--local") {
+			debug_local = 1
+		} else {
+			print "Unsupport option: "opt[i]
+			usage()
+			return -1
+		}
+	}
+	return 0
+}
+
+function find_latest_tar_file(dir)
+{
+	cmd = "ls -t " dir " 2> /dev/null "
+
+	file = ""
+	while ((cmd | getline) > 0) {
+		if ($1 ~ /tgz/) {
+			file = $1
+			break
+		}
+	}
+	close(cmd)
+
+	return file
+}
+
+function get_default_tar_file()
+{
+        dir = "/OSM/coffer_log/log/his_debug/log_debug/"
+
+        file = find_latest_tar_file(dir)
+        if (file == "") {
+                dir = "/OSM/log/nvram/"
+                file = find_latest_tar_file(dir)
+        }
+        if (file == "")
+                return ""
+        else
+                return sprintf("%s%s", dir, file)
+}
+
+function create_tmpfile_dir()
+{
+	dir = "./__debug_"PROCINFO["pid"]"/"
+
+	cmd = "mkdir -p " dir
+	ret = system(cmd)
+	if (ret == 0)
+		global_tmpfile = dir
+	else
+		global_tmpfile = ""
+}
+
+function clear_tmpfile_dir()
+{
+	if (global_tmpfile != "")
+		system("rm -rf " global_tmpfile)
+}
+
+function tar_file_process(tarfile, destdir)
+{
+	file = "nvram/log_debug.txt"
+
+	dir = destdir"/"tarfile"/"
+	cmd = "mkdir -p " dir
+	system(cmd)
+	cmd = "tar -xf " tarfile " -C " dir
+	system(cmd)
+
+	if (tarfile ~ /^\/OSM\/log\/nvram/)
+		file = "log_debug.txt"
+	return sprintf("%s%s", dir, file)
+}
+
+function get_default_log_file()
+{
+	tarfile = get_default_tar_file()
+	if (tarfile == "")
+		return ""
+	print "tar file: "tarfile
+	return tar_file_process(tarfile, global_tmpfile)
+}
+
+function get_file_type(filename)
+{
+	cmd = "file " filename " 2> /dev/null "
+
+	type = ""
+	if ((cmd | getline) > 0) {
+		if (match($0," text"))
+			type = "text"
+		else if (match($0,"gzip compressed"))
+			type = "tar"
+		else if (match($0,"bzip2 compressed"))
+			type = "tar"
+		else if (match($0," empty$"))
+			type = "text"
+		else if (match($0," directory$"))
+			type = "dir"
+		else
+			type = "unknown"
+	}
+	close(cmd)
+#	print filename " type: " type
+	return type
+
+}
+
+function get_log_from_file(filename)
+{
+	type = get_file_type(filename)	
+	if (type == "text")
+		return filename
+	if (type == "tar")
+		return tar_file_process(filename, global_tmpfile)
+	return ""
+}
+
+function arg_file_process(filename, fileidx)
+{
+	create_tmpfile_dir()
+
+	if (fileidx == 0) { 
+		if (debug_mem == 1 && debug_local == 1) {
+			ARGC = 3
+			ARGV[1] = "/proc/meminfo" 
+			ARGV[2] = "/proc/slabinfo"
+			return 0
+		}
+
+		file = get_default_log_file()
+		if (file == "") {
+			print "ERROR: Could not find default log file"
+			return -1
+		}
+		ARGC = 2
+		ARGV[1] = file 
+		return 0
+	}
+
+	argcnt = 1
+	for (i = 0; i < fileidx; i++) {
+		file = get_log_from_file(filename[i])
+		if (file == "")
+			continue
+		ARGV[argcnt++] = file
+	}
+	ARGC = argcnt
+	if (argcnt == 1) {
+		print "ERROR: Parameter is invalid"
+		return -1
+	}
+	return 0
+}
+
+function arg_process()
+{
+
+	global_exit = 0
+	optidx = 0
+	fileidx = 0
+
+	for (i = 1; i < ARGC; i++) {
+		if (ARGV[i] ~ /^-/) {
+			option[optidx++] = ARGV[i]
+		} else {
+			filename[fileidx++] = ARGV[i] 
+		}
+	}
+
+	ret = arg_option_process(option, optidx)
+	if (ret) {
+		global_exit = 1
+		exit 0
+	}
+
+	ret = arg_file_process(filename, fileidx)
+	if (ret) {
+		usage()
+		global_exit = 1
+		exit 0
+	}
+#	for (i = 1; i < ARGC; i++)
+	#	print "ARGV: " ARGV[i]
+}
+
+function end_process()
+{
+	clear_tmpfile_dir()
+	if (global_exit)
+		exit 0
+}
+
+function get_os_version()
+{
+	file = "/proc/cmdline"
+	type = get_file_type(file)
+	if (type == "text") {
+		while ((getline < file) > 0) {
+			print $0
+		}
+		close(file)
+	}
+}
+
+BEGIN {
+	oom_debug_on = 0
+	oom_vosmem = 0
+	oom_slabinfo = 0
+	oom_meminfo = 0
+	oom_psaux = 0
+	oom_rootfs = 0
+	oom_end = 0
+	oom_rootfs_flag = 0
+	oom_slabmem_total = 0
+
+	global_times = 1
+	oops_panic_on = 1
+
+	arg_process()
+	get_os_version()
+}
+
+#
+#function define
+#
+function oom_debug()
+{
+	if (oom_debug_on) {
+		printf "%d:%d: %s\n", NR, NF, $0
+	}
+}
+
+#oom meminfo
+function oom_meminfo_init()
+{
+	oom_mem["MemTotal:"] = 0
+	oom_mem["MemFree:"] = 0
+	oom_mem["Buffers:"] = 0
+	oom_mem["Cached:"] = 0
+	oom_mem["Active:"] = 0
+	oom_mem["Inactive:"] = 0
+	oom_mem["Active(anon):"] = 0
+	oom_mem["Inactive(anon):"] = 0
+	oom_mem["Active(file):"] = 0
+	oom_mem["Inactive(file):"] = 0
+	oom_mem["Unevictable:"] = 0
+	oom_mem["Dirty:"] = 0
+	oom_mem["Writeback:"] = 0
+	oom_mem["AnonPages:"] = 0
+	oom_mem["Mapped:"] = 0
+	oom_mem["Shmem:"] = 0
+	oom_mem["Slab:"] = 0
+	oom_mem["KernelStack:"] = 0
+	oom_mem["PageTables:"] = 0
+	oom_mem["VmallocUsed:"] = 0
+	oom_mem["AnonHugePages:"] = 0
+	oom_mem["CmaTotal:"] = 0
+	oom_mem["CmaFree:"] = 0
+	oom_mem["HugePages_Total:"] = 0
+	oom_mem["Hugepagesize:"] = 0
+	oom_mem["HardwareCorrupted:"] = 0
+	oom_mem["Bounce:"] = 0
+}
+
+function oom_meminfo_parse()
+{
+	for (i = 1; i < NF; i++) {
+		for (type in oom_mem) {
+
+			if (!match($i, type))
+				continue
+			oom_mem[type] = $(i + 1)
+			return;
+		}
+	}
+}
+
+function oom_meminfo_out()
+{
+	totalmem = oom_mem["MemTotal:"]
+	freemem = oom_mem["MemFree:"] 
+	lrumem = oom_mem["Active:"] + oom_mem["Inactive:"] + oom_mem["Unevictable:"] + (oom_mem["HugePages_Total:"] * oom_mem["Hugepagesize:"])
+	kernmem = totalmem - lrumem - freemem
+
+	if (totalmem) {
+		freerate = freemem * 100.0 / totalmem
+		lrurate = lrumem * 100.0 / totalmem
+		kernrate = kernmem * 100.0 / totalmem 
+	} else {
+		freerate = lrurate = kernrate = 0
+	}
+
+	pageunknown = kernmem - oom_mem["Slab:"] - oom_mem["VmallocUsed:"] - oom_mem["KernelStack:"] - oom_mem["PageTables:"] - oom_mem["HardwareCorrupted:"] - oom_mem["Bounce:"]
+	unit = "mb" 
+	base = 1 
+	if (match(unit, "mb")) {
+			base = 1024
+	}
+	printf "\n------------meminfo-------------\n" 
+	printf "     total     mem: %9d %s\n", totalmem / base, unit
+	printf "     |--free   mem: %9d %s (%2.1f%%)\n", freemem / base, unit, freerate
+	printf "     |--lru    mem: %9d %s (%2.1f%%)\n", lrumem / base, unit, lrurate
+	printf "        |---  user: %9d %s\n", oom_mem["AnonPages:"] / base, unit
+	printf "        |-fs/block: %9d %s\n", (lrumem - oom_mem["AnonPages:"] -  (oom_mem["HugePages_Total:"] * oom_mem["Hugepagesize:"])) / base, unit
+	printf "        |---  Huge: %9d %s\n", (oom_mem["HugePages_Total:"] * oom_mem["Hugepagesize:"]) / base, unit
+	printf "     |--kernel mem: %9d %s (%2.1f%%)\n", kernmem / base, unit, kernrate
+	printf "        |---  slab: %9d %s\n", oom_mem["Slab:"] / base, unit
+	printf "        |--vmalloc: %9d %s\n", oom_mem["VmallocUsed:"] / base, unit
+	printf "        |---kstack: %9d %s\n", oom_mem["KernelStack:"] / base, unit
+	printf "        |--pgtable: %9d %s\n", oom_mem["PageTables:"] / base, unit
+	printf "        |-- bounce: %9d %s\n", oom_mem["Bounce:"] / base, unit
+	printf "        |--corrupt: %9d %s\n", oom_mem["HardwareCorrupted:"] / base, unit
+	printf "        |--unknown: %9d %s\n", pageunknown / base, unit
+}
+
+#oom slabinfo
+function oom_slabinfo_parse()
+{
+	if (NF < 16)
+		return
+	for (i = 1; i < NF; i++) {
+		if (match($i, "tunables") && (i >= 7)) {
+			size = $(i - 5) * $(i - 4)
+			if (size == 0)
+				return
+			oom_slabmem_total += size
+
+			item = $(i - 7)
+			idx = index(item, "]")
+			if (idx)
+				tmp = substr(item, idx + 1)
+			else
+				tmp = item
+			oom_slabmem[tmp] = size
+			return;
+		}
+	}
+}
+
+function oom_slabinfo_out()
+{
+	printf "\n------------slabtop-------------\n"
+#	printf "    total slab: %d kb\n", oom_slabmem_total / 1024
+	for (i in oom_slabmem) {
+		size_mb = oom_slabmem[i] / 1024 / 1024
+		if (size_mb < 1) {
+			continue
+		}
+		printf "%18s: %9d mb\n", i, size_mb | "sort -k2 -rn"
+	}
+	close("sort -k2 -rn")
+}
+
+#oom ps aux
+function oom_psaux_parse()
+{
+	if (NF < 7)
+		return
+	for (i = 4; i < NF; i++) {
+		if (match($i, "K") && (match($(i + 1), "K")) && index($(i + 1), "0K") != 1) {
+		#if (match($i, "K") && (match($(i + 1), "K"))) {
+			oom_psmem[$0] = $(i + 1)
+			#oom_debug()
+		}
+	}
+}
+
+function local_psaux_out()
+{
+	cmd = "ps -aux | sort -nrk 6 | head -30 2> /dev/null"
+
+	printf "\n--------------------------------ps -aux-----------------------------------\n"
+	printf "   RSS    USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\n"
+	while ((cmd | getline) > 0) {
+		printf "%6d mb %s\n", $6 / 1024, $0
+	}
+	close(cmd)
+}
+
+function oom_psaux_out()
+{
+	if (debug_local && debug_mem) {
+		local_psaux_out()	
+		return
+	}
+	printf "\n--------------------------------ps -aux-----------------------------------\n"
+	printf "     RSS    PID  PPID              COMMAND      VSZ      RSS           STAT\n"
+	for (i in oom_psmem) {
+
+		item = i
+		idx = index(item, "]")
+		if (idx)
+			tmp = substr(item, idx + 1)
+		else
+			tmp = item
+
+		printf "%6d mb %s\n", oom_psmem[i] / 1024, tmp | "sort -k1 -rn"
+	}
+	close("sort -k1 -rn")
+}
+
+#oom rootfs
+function oom_rootfs_init()
+{
+	oom_rootfs_size["OSM"] = 0
+	oom_rootfs_size["ISM"] = 0
+	oom_rootfs_size["home"] = 0
+	oom_rootfs_size["root"] = 0
+	oom_rootfs_size["usr"] = 0
+	oom_rootfs_size["etc"] = 0
+	oom_rootfs_size["bin"] = 0
+	oom_rootfs_size["sbin"] = 0
+	oom_rootfs_size["lib"] = 0
+	oom_rootfs_size["lib64"] = 0
+	oom_rootfs_size["mnt"] = 0
+	oom_rootfs_size["opt"] = 0
+	oom_rootfs_size["tmp"] = 0
+	oom_rootfs_size["srv"] = 0
+	oom_rootfs_size["var"] = 0
+	oom_rootfs_size["startup_disk"] = 0
+	oom_rootfs_size["other"] = 0
+}
+
+function oom_rootfs_parse()
+{
+	for (i = 1; i < NF; i++) {
+		item = $i
+        if (oom_rootfs_flag == 0) {
+            tmp = $i
+            idx = index(tmp, "]")
+            if (idx)
+                item = substr(tmp, idx + 1)
+        }
+		if (item ~ /^\/OSM\//) {
+			oom_rootfs_size["OSM"] += $(i + 1)
+		}
+		else if (match(item, /^\/ISM\//)) {
+			oom_rootfs_size["ISM"] += $(i + 1)
+		}
+		else if (match(item, /^\/home\//)) {
+			oom_rootfs_size["home"] += $(i + 1)
+		}
+		else if (match(item, /^\/root\//)) {
+			oom_rootfs_size["root"] += $(i + 1)
+		}
+		else if (match(item, /^\/usr\//)) {
+			oom_rootfs_size["usr"] += $(i + 1)
+		}
+		else if (match(item, /^\/etc\//)) {
+			oom_rootfs_size["etc"] += $(i + 1)
+		}
+		else if (match(item, /^\/bin\//)) {
+			oom_rootfs_size["bin"] += $(i + 1)
+		}
+		else if (match(item, /^\/sbin\//)) {
+			oom_rootfs_size["sbin"] += $(i + 1)
+		}
+		else if (match(item, /^\/lib\//)) {
+			oom_rootfs_size["lib"] += $(i + 1)
+		}
+		else if (match(item, /^\/lib64\//)) {
+			oom_rootfs_size["lib64"] += $(i + 1)
+		}
+		else if (match(item, /^\/mnt\//)) {
+			oom_rootfs_size["mnt"] += $(i + 1)
+		}
+		else if (match(item, /^\/opt\//)) {
+			oom_rootfs_size["opt"] += $(i + 1)
+		}
+		else if (match(item, /^\/tmp\//)) {
+			oom_rootfs_size["tmp"] += $(i + 1)
+		}
+		else if (match(item, /^\/srv\//)) {
+			oom_rootfs_size["srv"] += $(i + 1)
+		}
+		else if (match(item, /^\/var\//)) {
+			oom_rootfs_size["var"] += $(i + 1)
+		}
+		else if (match(item, /^\/startup_disk\//)) {
+			oom_rootfs_size["var"] += $(i + 1)
+		}
+		else if (match(item, /,size$/)) {
+			oom_rootfs_size["other"] += $(i + 1)
+#			printf "%s: %d\n", $i, $(i + 1)
+		}
+		else {
+			continue	
+		}
+#		printf "%s: %d\n", $i, $(i + 1)
+		return
+	}
+}
+
+function oom_rootfs_out()
+{
+	printf "\n------------rootfs--------------\n"
+	for (i in oom_rootfs_size) {
+		printf "%18s: %9d mb\n", i, oom_rootfs_size[i] / 1024 / 1024 | "sort -k2 -rn"
+	}
+	close("sort -k2 -rn")
+}
+
+function global_info_init()
+{
+	oom_meminfo_init()
+	oom_rootfs_init()
+}
+
+function global_memory_out()
+{
+	if (oom_vosmem || oom_slabinfo || oom_slabinfo || oom_psaux || oom_rootfs || oom_end) {
+		oom_meminfo_out()
+		oom_slabinfo_out()
+		oom_rootfs_out()
+		oom_psaux_out()
+	}
+}
+
+
+#oops
+function oops_parse()
+{
+	start_str = "unable to handle kernel"
+	module_str = "Modules linked in:"
+	stack_str = "Stack:"
+	calltrace_str = "Call trace:"
+	code_str = "Code:"
+
+	if (match($0, start_str)) {
+		printf "line num %d: \t%s\n", NR, $0
+	}
+}
+
+#watchdog
+function watchdog_parse()
+{
+}
+
+function mce_parse()
+{
+	if (match($0, "Machine Check Exception:")) {
+		printf "line num %d: \t%s\n", NR, $0
+	}
+}
+
+#panic
+function panic_parse()
+{
+	mce_parse()
+	if (match($0, "Kernel panic - not syncing:")) {
+		printf "line num %d: \t%s\n", NR, $0
+	}
+}
+
+#
+# main
+#
+
+/Linux version/ {
+	global_times += 1
+	global_line[global_times] = NR
+	printf "\n------------bug report----------\n"
+	printf "system start times %2d: line num: %9d\n", global_times, global_line[global_times]
+}
+
+/reset type is/ {
+		printf "line num %d: \t%s\n", NR, $0
+}
+
+#/slab info:/ {
+/slabinfo - version:/ {
+	oom_debug()
+	oom_slabinfo = 1
+	oom_vosmem = 0
+}
+
+#oom_slabinfo && /mem info:/ {
+/MemTotal:/ {
+	oom_debug()
+	oom_meminfo = 1
+	oom_slabinfo = 0
+	oom_meminfo_init()
+}
+
+oom_meminfo && /ps -aux:/ {
+	oom_debug()
+	oom_psaux = 1
+	oom_meminfo = 0
+}
+
+oom_psaux && /rootfs file info:/ {
+	oom_debug()
+	oom_rootfs = 1
+	oom_psaux = 0
+	oom_rootfs_init()
+
+	oom_rootfs_flag = 0
+	for (i = 1; i < NF; i++) {
+		if ($i ~ /^rootfs file info:/) {
+			oom_rootfs_flag = 1
+		}
+	}
+}
+
+oom_rootfs && /all size=/ {
+	oom_rootfs = 0
+	oom_end = 1
+	oom_debug()
+}
+
+{
+	if (oops_panic_on) {
+		oops_parse()
+		panic_parse()
+	}
+
+	if (oom_vosmem) {
+		oom_debug()
+	}
+
+	if (oom_slabinfo) {
+		oom_slabinfo_parse()
+		oom_debug()
+	}
+
+	if (oom_meminfo) {
+		oom_meminfo_parse()
+		oom_debug()
+	}
+
+	if (oom_psaux) {
+		oom_psaux_parse()
+		oom_debug()
+	}
+
+	if (oom_rootfs) {
+		oom_rootfs_parse()
+		oom_debug()
+	}
+}
+
+END {
+	end_process()
+	global_memory_out()
+}
+
