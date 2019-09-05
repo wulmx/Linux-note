@@ -5,12 +5,18 @@
    1) busy-waiting
       advantage is can avoid context-switch
       disadvantage is consume resource
-   2) cpu can't prempted by kernel also can't sleep. otherwise will dead-lock
+   2) Critical region must be short
+      irq context : spinlock must forbidden native-cpu irq can use spin_lock_irqsave/spin_unlock_irqstore.
+      proc-context: can use semaphore or mutex
+      
+   3) cpu can't prempted by kernel(preempt_disable), also can't sleep. otherwise will dead-lock.
       for it's can prempted by interrupt. if code hase spinlock, it's must not called by softirq. otherwise it will be dead-lock.
 
       ex as follow:
       kswapd is recyle the mem by  __shrink_dcache_sb with spinlock.
       but cpu is prempted by bnx2x's soft irq. so dead-lock
+      for GFP_KERNEL  flag can sleep.  GFP -> get_free_page,
+      should use GFP_ATOMIC(never sleep) flag instead.
 
       crash64> bt -c 2
 	PID: 47     TASK: ffff880230c78400  CPU: 2   COMMAND: "kswapd0"
