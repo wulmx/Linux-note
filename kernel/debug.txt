@@ -1,0 +1,60 @@
+1. serial log
+2. dmesg
+3. dynamic debug log
+4. kdump
+
+1. serial log
+   1) start/shutdown hang eg: vnc black-screen etc.
+      kernel parameter: console=ttyS0,115200,8n1
+   2) vm serial log by xml 
+      - output as file
+       <serial type='file'>
+          <source path='///home/user/guest_serial.log'/>
+          <target port='0'/>
+        </serial>
+      - output as pty
+       <serial type='pty'>
+            <target type='isa-serial' port='0'/>
+       </serial>
+    
+2. dmesg
+3. dynamic debug log
+   dependence   CONFIG_DYNAMIC_DEBUG=y
+    kernel/Documentationdynamic-debug-howto.txt
+   - print
+     echo  'file nand.c line 4210 +p' > /sys/kernel/debug/dynamic_debug/control
+
+   -  cancel print
+     echo  'file nand.c line 4210 -p' > /sys/kernel/debug/dynamic_debug/control
+
+     eg:     pr_debug("  dynamic debug \n");
+
+    dump_stack
+
+4. kdump
+   # rpm -qa | grep kexec-tools
+   # systemctl status kdump
+   # /etc/default/grub.cfg
+     crashkernel=256M
+   # grub2-mkconfig -o /boot/grub2/grub.cfg
+
+   # echo c > /proc/sysrq-trigger  ( null point can dump)
+   # ls /var/crash/
+   # crash vmlinux System.map core_dump
+     crash > log
+             ps
+             bt <PID>
+             bt -f
+             vm
+
+     1) hang ;   ps | grep UN   see the sleep process
+     2) crash:   bt
+     3) common:  dis、struct、task、foreach bt、rd、p etc.
+     objdump
+
+
+   
+
+5. virsh dump
+   # virsh dump rhel-server-7.1-x86_64 /home/user/debug/rhel-7.1-x86_64.core
+
