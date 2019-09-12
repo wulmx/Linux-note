@@ -1,0 +1,20 @@
+1. vfs
+1. vfs
+  1) rootfs /
+    https://cloud.tencent.com/developer/article/1444062
+   /init/main.c start_kernel
+   -> /fs/dcache.c  vfs_caches_init
+   --> /fs/namespace.c  mnt_init
+   --> init_rootfs();
+   --> init_mount_tree
+   --> vfs_kern_mount
+   ---> /fs/fs_context.c fs_context_for_mount
+   ---> alloc_fs_context -> legacy_init_fs_context;    (1)
+   -->  fc_mount
+   ---> /fs/super.c vfs_get_tree -> fc->ops->get_tree(fc); -> (1)
+   --->  fc->fs_type->mount
+   ----> /init/do_mounts.c *rootfs_mount
+   -----> /fs/super.c *mount_nodev   <- generate sup_block instance 
+   -----> fill_super
+   --> root.dentry = mnt->mnt_root
+         

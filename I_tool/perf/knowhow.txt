@@ -3,6 +3,7 @@ https://github.com/brendangregg/perf-tools
 1- summary
 2- usage method
 3- event
+4- unsinged hotpod function
 
 
 
@@ -42,3 +43,23 @@ https://github.com/brendangregg/perf-tools
    - http://qcd.phys.cmu.edu/QCDcluster/intel/vtune/reference/DLTB_Load_Misses_Retired.htm
   instruction translation lookaside buffer (ITLB) # if iTLB-load-misses > iTLB-load ,that is not right 
   data translation lookaside buffer (DTLB) 
+
+4- unsinged hotpod function
+   --- 0x42062aac
+
+               |         
+
+               |--55.49%-- TrmRelBrMsgProc
+
+               |         
+
+               |--14.58%-- TrmUfmCfgMsgSrvE
+  can't find hotspot function as above. how ?
+  1) see the proc maps info ->  start address
+     # cat /proc/pid/maps 
+  2) calcucate the offset 
+     0x42062aac -  - 0x41e5f000 = 203AAC
+    
+  3) see the  Disassembly
+
+  
