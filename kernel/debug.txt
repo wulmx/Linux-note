@@ -2,6 +2,8 @@
 2. dmesg
 3. dynamic debug log
 4. kdump
+5. virsh dump 
+6. assembly
 
 1. serial log
    1) start/shutdown hang eg: vnc black-screen etc.
@@ -46,6 +48,7 @@
              bt <PID>
              bt -f
              vm
+             dis -r /dis -l
 
      1) hang ;   ps | grep UN   see the sleep process
      2) crash:   bt
@@ -58,3 +61,27 @@
 5. virsh dump
    # virsh dump rhel-server-7.1-x86_64 /home/user/debug/rhel-7.1-x86_64.core
 
+6. assembly
+   https://www.cnblogs.com/secondtonone1/p/6617884.html
+   https://www.cnblogs.com/secondtonone1/p/6652155.html
+   add +
+   sub -
+   imul *
+   idiv /
+   dec  --
+   neg  negate
+
+   cmp  compare
+   je   jump when equal
+   jne  jump when not equal
+   jg   jump when >
+   jge  jump when >=
+   jl   jump when <
+   
+   unsigned jump
+   ja   jump above
+   jae  jump >=
+   jb   jump when below <
+  
+   
+   

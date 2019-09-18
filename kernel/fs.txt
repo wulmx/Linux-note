@@ -1,4 +1,6 @@
 1. vfs
+2. e2fsck
+3. ext4
 1. vfs
   1) rootfs /
     https://cloud.tencent.com/developer/article/1444062
@@ -18,3 +20,154 @@
    -----> fill_super
    --> root.dentry = mnt->mnt_root
          
+2. e2fsck
+  1) repare the super-block or group descriptors
+     # e2fsck -y
+     e2fsck will use  super-block-backup to repair it. if the second superf-block also 
+     bad, should use option -b to specify other super-block-backup
+
+3. ext4
+  ref:  
+  https://blog.csdn.net/sara4321/article/details/8609610
+
+  1) super_block backup is at 3^ 5^ 7^ position
+  2) max large single file 256TB,   total 1EB
+  3)  
+    Filesystem revision #:    1 (dynamic)
+    Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+    Filesystem flags:         signed_directory_hash 
+    Default mount options:    (none)
+    Filesystem state:         clean
+    Errors behavior:          Continue
+    Filesystem OS type:       Linux
+    Inode count:              18219008
+    Block count:              72876032
+    Filesystem volume name:   <none>
+    Last mounted on:          /Dfx_File
+    Filesystem UUID:          599692ed-1d06-46a8-88d1-3b3796eedf0f
+    Filesystem magic number:  0xEF53
+    Filesystem revision #:    1 (dynamic)
+    Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+    Filesystem flags:         signed_directory_hash 
+    Default mount options:    (none)
+    Filesystem state:         clean
+    Errors behavior:          Continue
+    Filesystem OS type:       Linux
+    Inode count:              18219008
+    Block count:              72876032
+    Reserved block count:     3643801
+    Free blocks:              60586950
+    Free inodes:              18218982
+    First block:              0
+    Block size:               4096
+    Fragment size:            4096
+    Reserved GDT blocks:      1006
+    Blocks per group:         32768
+    Fragments per group:      32768
+    Inodes per group:         8192
+    Inode blocks per group:   512
+    RAID stride:              16
+    RAID stripe width:        144
+    Flex block group size:    16
+    Filesystem created:       Mon Sep  5 17:33:28 2016
+    Last mount time:          Mon Aug  5 14:37:06 2019
+    Last write time:          Mon Aug  5 14:37:06 2019
+    Mount count:              11
+    Maximum mount count:      20
+    Last checked:             Mon Sep  5 17:33:28 2016
+    Check interval:           15552000 (6 months)
+    Next check after:         Sat Mar  4 17:33:28 2017
+    Lifetime writes:          4926 MB
+    Reserved blocks uid:      0 (user root)
+    Reserved blocks gid:      0 (group root)
+    First inode:              11
+    Inode size:               256
+    Required extra isize:     28
+    Desired extra isize:      28
+    Journal inode:            8
+    Filesystem revision #:    1 (dynamic)
+    Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+    Filesystem flags:         signed_directory_hash 
+    Default mount options:    (none)
+    Filesystem state:         clean
+    Errors behavior:          Continue
+    Filesystem OS type:       Linux
+    Inode count:              18219008
+    Block count:              72876032
+    Filesystem volume name:   <none>
+    Last mounted on:          /Dfx_File
+    Filesystem UUID:          599692ed-1d06-46a8-88d1-3b3796eedf0f
+    Filesystem magic number:  0xEF53
+    Filesystem revision #:    1 (dynamic)
+    Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+    Filesystem flags:         signed_directory_hash 
+    Default mount options:    (none)
+    Filesystem state:         clean
+    Errors behavior:          Continue
+    Filesystem OS type:       Linux
+    Inode count:              18219008
+    Block count:              72876032
+    Reserved block count:     3643801
+    Free blocks:              60586950
+    Free inodes:              18218982
+    First block:              0
+    Block size:               4096
+    Fragment size:            4096
+    Reserved GDT blocks:      1006
+    Blocks per group:         32768
+    Fragments per group:      32768
+    Inodes per group:         8192
+    Inode blocks per group:   512
+    RAID stride:              16
+    RAID stripe width:        144
+    Flex block group size:    16
+    Filesystem created:       Mon Sep  5 17:33:28 2016
+    Last mount time:          Mon Aug  5 14:37:06 2019
+    Last write time:          Mon Aug  5 14:37:06 2019
+    Mount count:              11
+    Maximum mount count:      20
+    Last checked:             Mon Sep  5 17:33:28 2016
+    Check interval:           15552000 (6 months)
+    Next check after:         Sat Mar  4 17:33:28 2017
+    Lifetime writes:          4926 MB
+    Reserved blocks uid:      0 (user root)
+    Reserved blocks gid:      0 (group root)
+    First inode:              11
+    Inode size:               256
+    Required extra isize:     28
+    Desired extra isize:      28
+    Journal inode:            8
+    Default directory hash:   half_md4
+    Directory Hash Seed:      22a455ac-cd36-4bcb-aab7-a6b3949066d0
+    Journal backup:           inode blocks
+    Journal features:         journal_incompat_revoke
+    Journal size:             128M
+    Journal length:           32768
+    Journal sequence:         0x000007da
+    Journal start:            8197
+    
+    
+    Group 0: (Blocks 0-32767) [ITABLE_ZEROED]
+      Checksum 0x0ad2, unused inodes 8181
+      Primary superblock at 0, Group descriptors at 1-18
+      Reserved GDT blocks at 19-1024
+      Block bitmap at 1025 (+1025), Inode bitmap at 1041 (+1041)
+      Inode table at 1057-1568 (+1057)
+      23513 free blocks, 8181 free inodes, 2 directories, 8181 unused inodes
+      Free blocks: 9255-32767
+      Free inodes: 12-8192
+        
+    Group 1: (Blocks 32768-65535) [INODE_UNINIT, ITABLE_ZEROED]
+      Checksum 0x63a9, unused inodes 8192
+      Backup superblock at 32768, Group descriptors at 32769-32786
+      Reserved GDT blocks at 32787-33792
+      Block bitmap at 1026 (bg #0 + 1026), Inode bitmap at 1042 (bg #0 + 1042)
+      Inode table at 1569-2080 (bg #0 + 1569)
+      1023 free blocks, 8192 free inodes, 0 directories, 8192 unused inodes
+      Free blocks: 33793-34815
+      Free inodes: 8193-16384
+    
+    
+    ext4_super_block 
+     ext4_sb_info       fourth extended-fs super-block data in memory
+     ext4_extent        the extent on-disk structure.used at the bottom of the tree. 
