@@ -1,0 +1,21 @@
+1. same node neutron L2 flow
+  vm1->qbrxxx->plyxxx->br-int->plyyyy->qbryyy->vm2
+
+   vm1                     vm2
+    |                       |
+    tap**                tap**
+    qbr**                qbr**
+    |                       |
+    qvm**                qvm**
+    ply**                ply**
+    pvi**                pvi**
+    |                       |
+    pvo**                pvo**  
+    br-int  -------------->
+
+   tap is kernel-virtual-net-port.
+   qbr is Linux bridge
+   ply is policy bridge
+   br-int is L2 switch
+   pvi* and pvo* is patch-port, so can't use tcpdump to capture package.
+   
