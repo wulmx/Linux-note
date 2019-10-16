@@ -1,6 +1,7 @@
 1. vfs
 2. e2fsck
 3. ext4
+4. fs init
 1. vfs
   1) rootfs /
     https://cloud.tencent.com/developer/article/1444062
@@ -171,3 +172,22 @@
     ext4_super_block 
      ext4_sb_info       fourth extended-fs super-block data in memory
      ext4_extent        the extent on-disk structure.used at the bottom of the tree. 
+
+4. fs init
+  start_kernel
+    vfs_caches_init_early()
+    vfs_caches_init();
+        dcache_init();
+	    inode_init();
+	    files_init();
+	    files_maxfiles_init();
+	    mnt_init();
+	    bdev_cache_init();
+	    chrdev_init();
+     arch_call_rest_init()  
+
+5. read
+   /fs/read_write.c
+   vfs_read
+        new_sync_read
+

@@ -1,8 +1,10 @@
 1- base concept
 2- tuning
+3- e2fsprogs
 
 
 1. base concept
+  https://www.shennongblog.com/wenjianxitong1/
   https://blog.csdn.net/peng_cao/article/details/74352259
   1) sector	(logical_block_size)
     - basic unit for hardware trasferring the data
@@ -58,3 +60,13 @@
 2. tuning
   - tune IO
   https://cromwell-intl.com/open-source/performance-tuning/disks.html
+
+3- e2fsprogs
+  1) badblocks
+     #  badblocks -b 4096 -c 3 /dev/vda3 -o bbs.txt
+        -b  4096B as a block
+        -c  check 3times every block
+        -o  output text file
+     #  badblocks -b 4096 -c 3 /dev/vda3 -o bbs.txt  666 555
+        check from 555 -> 666 blocks
+    

@@ -19,3 +19,33 @@
    br-int is L2 switch
    pvi* and pvo* is patch-port, so can't use tcpdump to capture package.
    
+2. diff node neutron L2 flow
+  vm1->qbrxxx->plyxxx->br-int->plyyyy->qbryyy->vm2
+
+   vm1                     vm2
+    |                       |
+    tap**                tap**          <- system port
+    qbr**                qbr**          <- linux bridge
+    |                       |
+    qvm**                qvm**          <- internal port
+    ply**                ply**          <- ovs bridge
+    pvi**                pvi**          <- patch port
+    |                       |
+    pvo**                pvo**          <- patch port
+    br-int               br-int         <- ovs bridge
+    patch-tun            patch-tun      <- patch port
+    |                       |
+    patch-int            patch-int      <- patch port
+    br-tun               br-tun         <- ovs bridge
+    |                       |
+    tunnel_bearing       tunnel_bearing
+    |                        |
+    trunk0                  trunk0
+    |->>>----Switch---->>>---|
+
+   tap is kernel-virtual-net-port.
+   qbr is Linux bridge
+   ply is policy bridge
+   br-int is L2 switch
+   pvi* and pvo* is patch-port, so can't use tcpdump to capture package.
+   
