@@ -6,6 +6,8 @@ void rmDuplicate1(char str[]);
 void rmDuplicate2(char str1[], char str2[]);
 void rmDuplicate3(char str[]);
 void zipString(char str[], char str1[]);
+void zipString1(char *input, int len, char *output);
+void maxstring(char *input, int len, char *output);
 
 
 
@@ -62,6 +64,21 @@ void itoa(int n, char s[])
 
     printf("%s--%s\n", str4, str5);
     zipString(str4, str5);
+    printf("%s--%s\n", str4, str5);
+
+    printf("=====================================\n");
+    char *input = "aabbbc";
+    int len = strlen(input);
+    char *output = (char *)malloc(sizeof(char) * len);
+    zipString1(input, len, output);
+    printf("%s--%s\n", input, output);
+
+    printf("=====================================\n");
+    char *input1 = "aaabbbbbcccccccczzzzzzzz";
+    int len1 = strlen(input1);
+    char *output1 = (char *)malloc(sizeof(char) * len);
+    printf("%d %s %s\n", len1, input1, output1);
+    maxString(input1, len1, output);
 }
 
 /* use \0 instead of duplicate char */
@@ -161,13 +178,76 @@ void zipString(char str[], char str1[]) {
         }
         else{
             /* for linux c has't itoa, so can't  int(4byte) -> char(int) */
-            //str1[j] = (char)p;
-            itoa(p, & str1[j]);
+            str1[j] = p + '0';
+            //itoa(p, & str1[j]);
             str1[j+1] = str[i];
-            j=j+2;
+            j = j+2;
             p = 1;
         }
     }
     str1[j] = '\0';
     printf("output is %s\n", str1);
+}
+
+void zipString1(char *input, int len, char *output) {
+    int i = 0;
+    int j = 0;
+    int p = 1;
+
+    for (i; i<len; i++) {
+        printf("%d--\n", i);
+        while (input[i] != '\0' && input[i] == input[i+1]) {
+            printf("i i+1 is %c %c\n", input[i], input[i+1]);
+            p++;
+            i++;
+        }
+        printf("p is %d\n", p);
+        if (p == 1) {
+            output[j] = input[i];
+            j++;
+        }
+        else{
+            /* for linux c has't itoa, so can't  int(4byte) -> char(int) */
+            //str1[j] = (char)p;
+            itoa(p, & output[j]);
+            output[j+1] = input[i];
+            j = j+2;
+            p = 1;
+        }
+    }
+    output[j] = '\0';
+    printf("output is %s\n", output);
+}
+
+void maxString(char * input, int len, char * output) {
+    int count[10];
+    char element[10];
+    int i = 0;
+    int j = 0;
+    int p = 1;
+    int maxcnt = 0;
+    char maxasc = '0';
+    for (i; i<len; i++) {
+        printf("%d--\n", i);
+        
+        while (input[i] != '\0' && input[i] == input[i+1]) {
+            printf("i i+1 is %c %c\n", input[i], input[i+1]);
+            p++;
+            i++;
+        }
+        count[j] = (int)p;
+        if (p > maxcnt) maxcnt = p;
+
+        element[j] = input[i];
+        if (input[i] > maxasc) maxasc = input[i];
+
+        printf("==%d %c\n", count[j], element[j]);
+        p = 1;
+        j++;
+    }
+
+    for (i=0; i<maxcnt; i++) {
+        output[i] = maxasc;
+    }
+    printf("output is %s\n", output);
 }
