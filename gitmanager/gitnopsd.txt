@@ -100,6 +100,7 @@
 
 12- warning: LF will be replaced by CRLF in develop/python/wsgi/testroutes.py
   # git config --global --get core.autocrlf
+  # git config --global  core.autocrlf false
 
 13- 强制拉去最新代码
    在使用Git的过程中，有些时候我们只想要 git 服务器中的最新版本的项目，对于本地的项目中修改不做任何理会，就需要用到 Git pull 的强制覆盖，具体命令如下：

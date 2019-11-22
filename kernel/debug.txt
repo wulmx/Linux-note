@@ -4,6 +4,7 @@
 4. kdump
 5. virsh dump 
 6. assembly
+7. crash
 
 1. serial log
    1) start/shutdown hang eg: vnc black-screen etc.
@@ -85,3 +86,69 @@
   
    
    
+7. crash
+    bt 栈回溯
+     
+    log 内核打印
+     
+    ps 异常发生前的机器进程状态
+     
+    vm [pid] 当前或某个进程的内存区状态
+     
+    files 文件句柄
+     
+    task slab mm_struct 打印出内核定义 结构体
+     
+    mod -s 加载模块调试信息 如果模块内部函数无调试信息
+     
+    crash --mod 指明module 所在目录
+     
+    dis -l 【funcname】反汇编一个函数
+     
+    struct.member 打印出成员在结构中的偏移信息
+     
+    mod 模块相关信息
+      
+    如果反汇编失败，先把debuginfo 包反解到当前目录
+    # rpm2cpio debuginfo/kernel-debuginfo-2.6.32-279.el6.x86_64.rpm |cpio -di
+      
+    crash commands 上下文敏感
+     
+    help set
+     
+    set 查询当前上下文进程
+     
+    set pid 切换上下文到某个进程
+     
+    set -c 切换到某个cpu
+     
+    mach 查看堆栈布局
+     
+    irq 查看irq表
+     
+    p & 打印全局变量地址
+     
+    dentry.d_alias ffff8801c6f3e800 -o 打印结构成员的具体地址
+     
+    kmem -i # general memory usage 内存使用统计
+     
+    dev -d | awk '{if ($5>0){print}}' 查看异常 io 状态
+     
+    ps | grep UN | tail # 查看D状态进程 uninterruptible (D state) tasks
+     
+    struct -o tty_ldisc_ops 显示结构体成员及偏移
+     
+    per_cpu__XXXX 直接查看某个percpu 指针数组
+     
+    有时coredump 不全 
+     
+    可以 crash -d 或 crash --mininal
+     
+    x/128g address 这个命令dump 某个地址开始的内容
+
+8. register
+    %rax 作为函数返回值使用。
+    %rsp 栈指针寄存器，指向栈顶
+    %rdi，%rsi，%rdx，%rcx，%r8，%r9 用作函数参数，依次对应第1参数，第2参数。。。
+    %rbx，%rbp，%r12，%r13，%14，%15 用作数据存储，遵循被调用者使用规则，简单说就是随便用，调用子函数之前要备份它，以防他被修改
+    %r10，%r11 用作数据存储，遵循调用者使用规则，简单说就是使用之前要先保存原值

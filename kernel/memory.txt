@@ -2,6 +2,7 @@
 2- cache
 3- kmalloc/vmalloc/malloc
 4- high memory
+5- userspace memory-location 
 
 1. meminfo
   -cached
@@ -15,7 +16,7 @@
 	sum(swapper_spaces[i].nrpages):
  
     
-3- kmalloc/vmalloc/malloc
+3- kmalloc/vmalloc/get_free_page
   kmalloc
   1) continuation physic-memory address
   2) memory is between 3GB ~ hign-memory
@@ -24,10 +25,42 @@
   1) continuation virtual-mem address, but phy-mem may not be continue
   2) memory is between VMALLOC_START～4GB
     
-
+  get_free_page
+  1) allocate the free page (only 2 4 8 ...512 page as buddy) 
+  2) buddy 
 
   
 4- high memory
   1) 3GB-4GB is kernel memory
   2) 896MB-1GB is hign-memory
   3) high_memory = (void *) __va(max_low_pfn * PAGE_SIZE)
+
+5- userspace memory-location 
+
+  https://www.geeksforgeeks.org/memory-layout-of-c-program/
+ ^HIGH ADDRESS
+ | 1) stack (zhan) area
+ |   - managed by compiler, the compiler automatically assign and release 
+ |     the memory.
+ |   - store some parameters which was used to run function
+ |     * local variables
+ |     * function parameters
+ |     * return parameter
+ |     * return address  etc.
+ | 2) heap (dui) area
+ |   - managed by programer. 
+ |    * malloc etc.
+ |
+ | 3) static area (Uninitialized data segment & Initialized data segment)
+ |   - managed by system. it was reclaimed automatically 
+ |     after programer was closed
+ |    * uninitialized gloable/static variables 
+ |      it's BSS segment. Block Started by Symbol
+ |    * initialized gloable/static variables
+ |       it's data segment
+ |
+ | 4) text constant area (text segment and code segment)
+ |   - managed by system. It was reclaimed automatically 
+ |     after programer was closed.
+ |    * string constant value "123456" etc.
+ |    * code segment

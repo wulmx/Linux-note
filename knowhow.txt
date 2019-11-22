@@ -56,6 +56,10 @@
 56- pip
 57- ps
 58- vim
+59- $() and ` ` has the same effect
+60- curl
+
+
 
 1) about  sed command
    - transfer variable using ""
@@ -244,6 +248,9 @@ if can't situation:
 
   Another app is currently holding the yum lock; waiting for it to exit...
   # rm -f /var/run/yum.pid
+
+  download
+  # yum update  kernel-debuginfo -y --downloadonly --downloaddir=debug
 
 15) how to see thread infomation of process
   # ps -ef f
@@ -672,9 +679,28 @@ if can't situation:
    2) cscope
       # cscope -Rbqk
    3) cscope 快捷键
+     - ctrl \ s
+     - ctrl \ g
       在vimrc中配置好了快捷键
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-VIM中操作时，按下 CTRL+\+g 就是没作用。之前遇到过也解决了但是没记录，这次又尝试好半天，原来是先按ctrl不放，按\键，同时放开，快速按g键！
+        nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+        VIM中操作时，按下 CTRL+\+g 就是没作用。之前遇到过也解决了但是没记录，这次又尝试好半天，原来是先按ctrl不放，按\键，同时放开，快速按g键！
+
+             :cs find {querytype} {name}     
+                            0或者s   —— 查找这个C符号
+
+                            1或者g  —— 查找这个定义
+
+                            2或者d  —— 查找被这个函数调用的函数（们）
+
+                            3或者c  —— 查找调用这个函数的函数（们）
+
+                            4或者t   —— 查找这个字符串
+
+                            6或者e  —— 查找这个egrep匹配模式
+
+                            7或者f   —— 查找这个文件
+
+                            8或者i   —— 查找#include这个文件的文件（们）
    4) dos2unix can't change format
      - sed -i "s/\r//" ~/.vimrc
      or
@@ -683,3 +709,6 @@ VIM中操作时，按下 CTRL+\+g 就是没作用。之前遇到过也解决了但是没记录，这次又尝试�
 
 
   
+59- $() and ` ` has the same effect
+60- curl
+

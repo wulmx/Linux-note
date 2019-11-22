@@ -1,1 +1,31 @@
 1. trace function list  https://sourceware.org/systemtap/tapsets/
+2. install
+3. probe
+
+2. install
+
+  1) install
+     # yum install kernel-debuginfo kernel-devel systemtap  -y  
+     # stap-prep 
+
+  2) verify useable 
+     # sudo stap -ve 'probe begin { log("hello world") exit() }'
+      Pass 1: parsed user script and 114 library scripts using 220028virt/33132res/3284shr/30068data kb, in 330usr/20sys/358real ms.
+      Pass 2: analyzed script: 1 probe, 2 functions, 0 embeds, 0 globals using 220820virt/34184res/3616shr/30860data kb, in 10usr/0sys/5real ms.
+      Pass 3: using cached /root/.systemtap/cache/ae/stap_ae7ee27d714414fcaebc519bf8ffbc1d_1133.c
+      Pass 4: using cached /root/.systemtap/cache/ae/stap_ae7ee27d714414fcaebc519bf8ffbc1d_1133.ko
+      Pass 5: starting run.
+      hello world
+      Pass 5: run completed in 10usr/30sys/359real ms.
+      
+3. probe
+    begin	                            在脚本开始时触发
+    end	                                在脚本结束时触发
+    kernel.function("sys_sync")	        调用 sys_sync 时触发
+    kernel.function("sys_sync").call	同上
+    kernel.function("sys_sync").return	返回 sys_sync 时触发
+    kernel.syscall.*	                进行任何系统调用时触发
+    kernel.function("*@kernel/fork.c:934")	    到达 fork.c 的第 934 行时触发
+    module("ext3").function("ext3_file_write")	调用 ext3 write 函数时触发
+    timer.jiffies(1000)	                        每隔 1000 个内核 jiffy 触发一次
+    timer.ms(200).randomize(50)	                每隔 200 毫秒触发一次，带有线性分布的随机附加时间（-50 到 +50）

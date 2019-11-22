@@ -1,5 +1,5 @@
 #!/usr/bin/awk -f 
-#
+# wulm 20181209
 # This tool is used for parsing memory log info
 # ./getmem -- -l -m
 # formula

@@ -1,5 +1,14 @@
-1- 
+1- trace-cmd 
 2- analyse
 
+
+1- trace-cmd 
+ 1) enable the plugin function_graph
+  # trace-cmd record -p function_graph ls /home/
+ 2) report cpu2
+  # trace-cmd report --cpu 2
+ 3) enable some event and record
+  # trace-cmd record -e sched_switch -e sched_wakeup
+  
 
 2. analyse
