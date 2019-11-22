@@ -1,0 +1,39 @@
+#! /usr/bin/env stap
+# stap  --all-modules dropwatch.stp 
+# Monitoring for dropped packets
+#
+# 13 packets dropped at icmp_rcv
+# 8 packets dropped at __udp4_lib_rcv
+# 1 packets dropped at __netif_receive_skb_core
+#
+# 5 packets dropped at icmp_rcv
+# 3 packets dropped at __netif_receive_skb_core
+# on older kernel can stap -dkernel `cat /proc/modules | awk 'BEGIN { ORS = " " } {print "-d"$1}'` dropwatch.stp
+#
+############################################################
+# Dropwatch.stp
+# Author: Neil Horman <nhorman@redhat.com>
+# An example script to mimic the behavior of the dropwatch utility
+# http://fedorahosted.org/dropwatch
+############################################################
+
+# Array to hold the list of drop points we find
+global locations
+
+# Note when we turn the monitor on and off
+probe begin { printf("Monitoring for dropped packets\n") }
+probe end { printf("Stopping dropped packet monitor\n") }
+
+# increment a drop counter for every location we drop at
+probe kernel.trace("kfree_skb") { locations[$location] <<< 1 }
+
+# Every 5 seconds report our drop locations
+probe timer.sec(5)
+{
+  printf("\n")
+  foreach (l in locations-) {
+    printf("%d packets dropped at %s\n",
+           @count(locations[l]), symname(l))
+  }
+  delete locations
+}

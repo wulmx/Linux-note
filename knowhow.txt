@@ -58,6 +58,7 @@
 58- vim
 59- $() and ` ` has the same effect
 60- curl
+61- dos2unix
 
 
 
@@ -711,4 +712,5 @@ if can't situation:
   
 59- $() and ` ` has the same effect
 60- curl
-
+61- dos2unix
+    # find ./ | xargs dos2unix

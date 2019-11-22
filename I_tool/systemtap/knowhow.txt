@@ -1,7 +1,23 @@
 1. trace function list  https://sourceware.org/systemtap/tapsets/
+1. stap
 2. install
 3. probe
 
+ref:
+https://www.ibm.com/developerworks/cn/linux/l-systemtap/index.html
+https://sourceware.org/systemtap/SystemTap_Beginners_Guide/useful-systemtap-scripts.html
+
+1. stap
+   1) get the probe points
+    # stap -l 'netdev.*'
+    # stap -l 'systemcall.*'
+
+   2) get the probe variables
+    # stap -L 'netdev.receive' 
+       netdev.receive dev_name:string length:long protocol:long truesize:long $skb:struct sk_buff*
+
+    
+   
 2. install
 
   1) install

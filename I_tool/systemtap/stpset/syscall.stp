@@ -1,0 +1,31 @@
+#!/usr/bin/stap
+
+
+
+# get the syscall count for every process
+#
+global syscalllist
+
+probe begin {
+          printf("System Call Monitoring Started (10 seconds)...\n")
+}
+
+probe syscall.*
+{
+          syscalllist[pid(), execname()]++
+}
+
+probe timer.ms(10000) {
+          foreach ( [pid, procname] in syscalllist ) {
+                      printf("%s[%d] = %d\n", procname, pid, syscalllist[pid, procname] )
+                        }
+            exit()
+
+}
+
+# output
+# System Call Monitoring Started (10 seconds)...
+# stapio[13262] = 183
+# systemd-logind[1635] = 9
+# systemd[1] = 15
+# irqbalance[1634] = 17
