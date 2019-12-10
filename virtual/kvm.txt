@@ -1,0 +1,6 @@
+1. [19056.645108] kvm [17393]: vcpu0 unhandled rdmsr: 0x639 
+
+
+1. [19056.645108] kvm [17393]: vcpu0 unhandled rdmsr: 0x639 
+  # echo 1 > /sys/module/kvm/parameters/ignore_msrs
+  # echo "options kvm ignore_msrs=1" | sudo tee /etc/modprobe.d/kvm-ignore-msrs.conf

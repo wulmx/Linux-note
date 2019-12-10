@@ -24,7 +24,9 @@ https://sourceware.org/systemtap/SystemTap_Beginners_Guide/useful-systemtap-scri
      # yum install kernel-debuginfo kernel-devel systemtap  -y  
      # stap-prep 
 
-  2) verify useable 
+  2) verify useable
+     #  stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+ 
      # sudo stap -ve 'probe begin { log("hello world") exit() }'
       Pass 1: parsed user script and 114 library scripts using 220028virt/33132res/3284shr/30068data kb, in 330usr/20sys/358real ms.
       Pass 2: analyzed script: 1 probe, 2 functions, 0 embeds, 0 globals using 220820virt/34184res/3616shr/30860data kb, in 10usr/0sys/5real ms.

@@ -1,0 +1,25 @@
+1. summary
+
+1. summary
+  http://www.pianshen.com/article/315496053/
+
+2. migrate_page for sriov VM
+  for the memory is managed by IOMMU.
+  1) first detach the device
+    # virsh detach-device 310 nic3.xml
+    # cat nic3.xml
+    <interface type='hostdev' managed='yes'>
+      <mac address='fa:16:3e:a5:76:be'/>
+      <source>
+        <address type='pci' domain='0x0000' bus='0xb1' slot='0x1e' function='0x0'/>
+      </source>
+      <vlan>
+        <tag id='2051'/>
+      </vlan>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </interface>
+    
+  2) migratepage
+    #  migratepages 46686 1 0
+  3) attach the device
+    # virsh attach-device 310 nic3.xml

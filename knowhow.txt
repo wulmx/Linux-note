@@ -241,6 +241,15 @@ if can't situation:
   # cat num.txt | awk "{ sum += $1 } END { printf "%.2f\n",sum }"
 
 14) yum
+
+  install epel yum
+  install alibaba epel
+  # wget -O /etc/yum.repos.d/epel-7.repo http://mirrors.aliyun.com/repo/epel-7.repo 
+  or
+   
+  # yum list | grep epel-release
+  # yum install -y epel-release
+
   how to install package specifying the repolist
   # yum --disablerepo="*" --enablerepo="rhel7.3" install kernel-devel
 

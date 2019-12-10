@@ -10,6 +10,7 @@ https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/pe
 8- ifconfig
 9- Full Duplex and Half Duplex
 10-netstat
+11-ovs
 --------------knowhow------------------
 1) NAT network(G: guest H:host) 
 G	->	H  O
@@ -194,3 +195,7 @@ BRIDGE=br0
 10. netstat
    1) get socket status
      # netstat -paut
+11-ovs
+   1) get port info
+      # ovs-ofctl show br0
+   

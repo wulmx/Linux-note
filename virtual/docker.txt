@@ -1,0 +1,8 @@
+1. base op
+
+1. base op
+
+  1） create
+    # docker run -it 10.37.210.125:5001/centos:latest /bin/sh
+  2) import
+    # cat centos7-v1.tar | docker import - centos7_wlm

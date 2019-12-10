@@ -1,5 +1,11 @@
 1. spinlock
 2. rcu
+3. systemv singal and posix signal
+4. futex( fast userspace mutex)
+5. lock type
+   ref https://blog.csdn.net/ccwzhu/article/details/81171092
+   https://blog.csdn.net/lqxandroid2012/article/details/53784323
+
 
 1. spinlock
    1) busy-waiting
@@ -114,3 +120,20 @@
    2) 
 
 
+3. lock type
+   ref https://blog.csdn.net/ccwzhu/article/details/81171092
+   https://blog.csdn.net/lqxandroid2012/article/details/53784323
+   1) D status deadlock 
+     - TASK_UNINTERRUPTIBLE for long time can't restore, can't killed by 'kill -9'
+     - /proc/sys/kernel/hung_task_panic 
+     - /proc/sys/kernel/hung_task_timeout_secs
+
+   2) R status deadlock
+     - TASK_RUNNING forlong time and prempt cpu without switch
+        * close preemption and in dead-loop
+        * close preemption and in sleep
+     - spinlock
+        * rescurs use:  use agin before release spinlock
+        * blocking or sleep after get spinlock eg: copy_to_user/copyfromuser/kmolloc etc.(maybe blocking)
+        * not disable_interrupt in interrupt
+        * 

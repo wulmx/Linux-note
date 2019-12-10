@@ -25,6 +25,11 @@
 13- 强制拉去最新代码
 14- error: RPC failed; curl 56 Failure when receiving data from the peer
 15- remove middle-commit (multi-commit)
+16- fatal: Not a git repository (or any parent up to mount point /opt)
+17- git sendmail for gmail
+18- Please move or remove them before you can switch branches.
+19- git checkout https://www.cnblogs.com/hutaoer/archive/2013/05/07/git_checkout.html
+
 
 1. how to remove 
  how to remove file
@@ -128,3 +133,15 @@
       *** -> drop
    3) git pull
    4) git push
+16- fatal: Not a git repository (or any parent up to mount point /opt)
+   solution
+   # git init
+
+17- git sendmail for gmail
+    ref: https://mine260309.me/archives/1656
+    msmtp + proxychains4
+    https://www.harker.cn/archives/proxychains.html
+    
+18- Please move or remove them before you can switch branches.
+   # git clean -d -fx
+19- git checkout https://www.cnblogs.com/hutaoer/archive/2013/05/07/git_checkout.html
