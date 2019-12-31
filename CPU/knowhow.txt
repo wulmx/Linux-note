@@ -2,6 +2,8 @@
 2- RTC TSC PIT jiffies 
 3- numactl
 4- search wheter cpu is dispersion
+5- monitor tool
+   intel-cmt-cat  for cache-miss etc.
 
 2. IPC & CPI
   IPC = 1/CPI
@@ -29,4 +31,6 @@
 3- numactl
 4- search wheter cpu is dispersion
    1) sar's runq-sz=cpus, if every cpu has overload, is dispersion
-   
+5- monit tool  
+   1) intel-cmt-cat  for cache-miss etc.
+      https://github.com/intel/intel-cmt-cat

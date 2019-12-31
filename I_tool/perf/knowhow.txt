@@ -1,27 +1,32 @@
 https://github.com/brendangregg/perf-tools
 
 1- summary
-2- usage method
-3- event
-4- unsinged hotpod function
+2- perf top
+3- perf stat
+4- perf record
+5- perf kvm
+6- event
+7- unsinged hotpod function
 
 
 
 1. summary
   - from kernel 2.6.31 start to support perf tools(since RHEL6)
   - RHEL5.7 don't support perf
-2. usage
-  1) perf top
-  2) perf stat
+2. perf top
+3. perf stat
    # perf stat ls
    specify the CPU NO.
    # perf stat -C 0
    specify some event for monitor L1TF L1 cache-miss and TLB-miss
    # perf stat -e L1-dcache-load-misses -e L1-dcache-loads -e L1-dcache-store-misses -e L1-icache-load-misses -e dTLB-load-misses -e dTLB-loads -e dTLB-load-misses -e dTLB-loads -e dTLB-store-misses -e dTLB-stores -e iTLB-load-misses -e iTLB-loads -p 28190 -- sleep 10
   
+   specify the cpu
+   # perf kvm stat record -a sleep 10
+   
 
 
-  3) perf record
+4.  perf record
     -d  will output the L1 and LLC(L3) info
     -d:          detailed events, L1 and LLC data cache
     -d -d:     more detailed events, dTLB and iTLB events
@@ -34,15 +39,38 @@ https://github.com/brendangregg/perf-tools
      difference of 99 and 997 is samples count
      [ perf record: Captured and wrote 3.416 MB 3504_block_seq_write_sync/perf_dwarf_99.data (421 samples) ]
      [ perf record: Captured and wrote 34.369 MB 20180421182818_block_seq_write_sync/perf_dwarf_997.data (4258 samples) ]
+   
+    record kvm stat
+    # perf kvm stat record -a sleep 10
+    # perf kvm stat report
+   
   4) perf timechart
    # perf timechart record -T 
    # perf timechart -w 1900
    # perf timechart -w 1800 -o output_io.svg
 
+5. perf kvm
+    ref
+     https://www.ibm.com/developerworks/community/blogs/IBMzOS/entry/20141104?lang=en
+   1) get all kvm guest stat info
+    # perf kvm stat record -a sleep 10
+   2) get kvm and host info
+     # ssh root@11.0.0.100 "cat /proc/kallsyms" > /tmp/guest.kallsyms
+     # ssh root@11.0.0.100 "cat /proc/modules" > /tmp/guest.modules
+     # perf kvm --host --guest --guestkallsyms=/tmp/guest.kallsyms --guestmodules=/tmp/guest.modules record -a -g sleep 10
+     # perf kvm --host --guest --guestkallsyms=/tmp/guest.kallsyms --guestmodules=/tmp/guest.modules report  -i perf.data.kvm
+      if only host output is perf.data.host
+      if only guest output is perf.data.guest
+      both is perf.data.kvm
+   
 3. event
    - http://qcd.phys.cmu.edu/QCDcluster/intel/vtune/reference/DLTB_Load_Misses_Retired.htm
   instruction translation lookaside buffer (ITLB) # if iTLB-load-misses > iTLB-load ,that is not right 
   data translation lookaside buffer (DTLB) 
+
+  VM-EXIT  
+  1) HLT  when cpu enter ilde, will call HLT hung the cpu
+          to give cputime to other task
 
 4- unsinged hotpod function
    --- 0x42062aac

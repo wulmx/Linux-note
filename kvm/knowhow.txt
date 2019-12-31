@@ -5,6 +5,7 @@
 5- virsh
 6- kvm_stat
 7- vm exitcode for xen(kvm?)  https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-1961.html
+8- HLT kvm https://www.linux-kvm.org/images/a/ac/02x03-Davit_Matalack-KVM_Message_passing_Performance.pdf
 
 -ref
   https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html-single/virtualization_tuning_and_optimization_guide/index

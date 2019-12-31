@@ -140,9 +140,10 @@
   2) guest
      # fdisk  
        p -> n -> p -> w
-     
+     # partprobe /dev/vda
+     # partprobe -s  
      add vda3 to the lvm
-     # reboot
+     # reboot  <- if use partprobe can skip this
      # pvcreate /dev/vda3
        Physical volume "/dev/vda3" successfully created.
      # pvs
@@ -158,7 +159,8 @@
      # vgs
        VG   #PV #LV #SN Attr   VSize  VFree
        rhel   2   2   0 wz--n- 23.99g 10.00g
-     
+     # lvcreate systemvg -n mylv -L 20G
+ 
      how to add VFree(10g) into root
      # lvs
        LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert

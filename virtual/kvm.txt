@@ -1,6 +1,58 @@
 1. [19056.645108] kvm [17393]: vcpu0 unhandled rdmsr: 0x639 
-
+2. performance optimize
+   
 
 1. [19056.645108] kvm [17393]: vcpu0 unhandled rdmsr: 0x639 
   # echo 1 > /sys/module/kvm/parameters/ignore_msrs
   # echo "options kvm ignore_msrs=1" | sudo tee /etc/modprobe.d/kvm-ignore-msrs.conf
+
+2. performance optimize
+   1) HLT optimize
+     https://cloud.tencent.com/developer/article/1400629
+     ilde=poll  or  echo 2000000 > /sys/module/kvm/parameters/halt_poll_ns
+     halt_poll_ns:  befor HLT, if has irq won't call HLT
+
+2. kvm-stat
+kvm_ack_irq - Number of interrupt controller (PIC/IOAPIC) interrupt acknowledgements.
+kvm_age_page - Number of page age iterations by memory management unit (MMU) notifiers.
+kvm_apic - Number of APIC register accesses.
+kvm_apic_accept_irq - Number of interrupts accepted into local APIC.
+kvm_apic_ipi - Number of inter processor interrupts.
+kvm_async_pf_completed - Number of completions of asynchronous page faults.
+kvm_async_pf_doublefault - Number of asynchronous page fault halts.
+kvm_async_pf_not_present - Number of initializations of asynchronous page faults.
+kvm_async_pf_ready - Number of completions of asynchronous page faults.
+kvm_cpuid - Number of CPUID instructions executed.
+kvm_cr - Number of trapped and emulated control register (CR) accesses (CR0, CR3, CR4, CR8).
+kvm_emulate_insn - Number of emulated instructions.
+kvm_entry - Number of emulated instructions.
+kvm_eoi - Number of Advanced Programmable Interrupt Controller (APIC) end of interrupt (EOI) notifications.
+kvm_exit - Number of VM-exits.
+kvm_exit (NAME) - Individual exits that are processor-specific. See your processor's documentation for more information.
+kvm_fpu - Number of KVM floating-point units (FPU) reloads.
+kvm_hv_hypercall - Number of Hyper-V hypercalls.
+kvm_hypercall - Number of non-Hyper-V hypercalls.
+kvm_inj_exception - Number of exceptions injected into guest.
+kvm_inj_virq - Number of interrupts injected into guest.
+kvm_invlpga - Number of INVLPGA instructions intercepted.
+kvm_ioapic_set_irq - Number of interrupts level changes to the virtual IOAPIC controller.
+kvm_mmio - Number of emulated memory-mapped I/O (MMIO) operations.
+kvm_msi_set_irq - Number of message-signaled interrupts (MSI).
+kvm_msr - Number of model-specific register (MSR) accesses.
+kvm_nested_intercepts - Number of L1 ⇒ L2 nested SVM switches.
+kvm_nested_vmrun - Number of L1 ⇒ L2 nested SVM switches.
+kvm_nested_intr_vmexit - Number of nested VM-exit injections due to interrupt window.
+kvm_nested_vmexit - Exits to hypervisor while executing nested (L2) guest.
+kvm_nested_vmexit_inject - Number of L2 ⇒ L1 nested switches.
+kvm_page_fault - Number of page faults handled by hypervisor.
+kvm_pic_set_irq - Number of interrupts level changes to the virtual programmable interrupt controller (PIC).
+kvm_pio - Number of emulated programmed I/O (PIO) operations.
+kvm_pv_eoi - Number of paravirtual end of input (EOI) events.
+kvm_set_irq - Number of interrupt level changes at the generic IRQ controller level (counts PIC, IOAPIC and MSI).
+kvm_skinit - Number of SVM SKINIT exits.
+kvm_track_tsc - Number of time stamp counter (TSC) writes.
+kvm_try_async_get_page - Number of asynchronous page fault attempts.
+kvm_update_master_clock - Number of pvclock masterclock updates.
+kvm_userspace_exit - Number of exits to user space.
+kvm_write_tsc_offset - Number of TSC offset writes.
+vcpu_match_mmio - Number of SPTE cached memory-mapped I/O (MMIO) hits.

@@ -59,8 +59,8 @@
 59- $() and ` ` has the same effect
 60- curl
 61- dos2unix
-
-
+62- data range
+63- bit number
 
 1) about  sed command
    - transfer variable using ""
@@ -680,6 +680,22 @@ if can't situation:
   2) get all sub process
      # pstree -p 6648
 
+  3) get child thread ID
+   # ps -T -p 10418
+      PID  SPID TTY          TIME CMD
+    10418 10418 ?        00:00:13 qemu-kvm
+    10418 10419 ?        00:00:00 qemu-kvm
+    10418 10423 ?        06:40:33 CPU 0/KVM
+    10418 10424 ?        06:40:50 CPU 1/KVM
+    10418 10425 ?        06:41:27 CPU 2/KVM
+    10418 10426 ?        06:55:04 CPU 3/KVM
+    10418 10427 ?        06:52:20 CPU 4/KVM
+    10418 10428 ?        06:53:13 CPU 5/KVM
+    10418 10429 ?        06:37:26 CPU 6/KVM
+    10418 10430 ?        06:27:56 CPU 7/KVM
+    10418 10432 ?        00:00:00 vnc_worker
+    
+
 58- vim
    1)  support chinese
      # vim /etc/vimrc
@@ -723,3 +739,19 @@ if can't situation:
 60- curl
 61- dos2unix
     # find ./ | xargs dos2unix
+62- data range
+    unsigned   int      0～4294967295  
+    int                 2147483648～2147483647
+    unsigned long       0～4294967295
+    long                2147483648～2147483647
+    long long的最大值： 9223372036854775807
+    long long的最小值： -9223372036854775808
+    unsigned long long的最大值：1844674407370955161
+    
+    __int64的最大值：   9223372036854775807
+    __int64的最小值：   -9223372036854775808
+    unsigned __int64的最大值：18446744073709551615
+
+63- bit number
+   # echo "obase=2; 1000000000" | bc | awk   '{print length($0)}'
+ 

@@ -2,6 +2,8 @@
 2. e2fsck
 3. ext4
 4. fs init
+5. jbd2
+
 1. vfs
   1) rootfs /
     https://cloud.tencent.com/developer/article/1444062
@@ -190,4 +192,11 @@
    /fs/read_write.c
    vfs_read
         new_sync_read
+6. jbd2
+   disable journal function can improve IO performance
+    http://www.lenky.info/archives/2012/02/990
 
+   # dumpe2fs /dev/vda | grep 'Filesystem features' | grep 'has_journal'
+   # tune2fs -O ^has_journal /dev/vda 
+   enable 
+   # tune2fs -O has_journal /dev/vda

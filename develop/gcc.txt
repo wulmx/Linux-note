@@ -6,7 +6,7 @@
 6. code rule
 7. makefile
 8. glib
-
+9. pthread
 
 3. trouble-shooting
 
@@ -59,3 +59,5 @@
       用到线程，编译时则加入：`pkg-config --cflags --libs gthread-2.0`
       用到插件，编译时则加入：`pkg-config --cflags --libs gmoudle-2.0`
  
+9. pthread
+  # gcc -g -Wall -pthread mlock.c -lpthread -o lock
