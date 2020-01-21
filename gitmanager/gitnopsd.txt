@@ -29,7 +29,7 @@
 17- git sendmail for gmail
 18- Please move or remove them before you can switch branches.
 19- git checkout https://www.cnblogs.com/hutaoer/archive/2013/05/07/git_checkout.html
-
+20- push  branch
 
 1. how to remove 
  how to remove file
@@ -145,3 +145,13 @@
 18- Please move or remove them before you can switch branches.
    # git clean -d -fx
 19- git checkout https://www.cnblogs.com/hutaoer/archive/2013/05/07/git_checkout.html
+20- push branch
+
+    1) 远程已有remote_branch分支并且已经关联本地分支local_branch且本地已经切换到local_branch
+      # git push
+
+    2) 远程已有remote_branch分支但未关联本地分支local_branch且本地已经切换到local_branch
+      # git push -u origin/remote_branch
+
+    3) 远程没有remote_branch分支并，本地已经切换到local_branch
+      # git push origin local_branch:remote_branch

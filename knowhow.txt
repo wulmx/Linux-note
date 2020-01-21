@@ -223,8 +223,12 @@ if can't situation:
    -3 suppress column 3 thoose lines appear in both files
 
 13) how to calculation
+  - ÃÝÔËËã double *
+   # cho $((3**10))
   - intger calculation
   $(( 3 * 5 ))
+  - >> <<
+  # echo $((1<<10))
 
   - float calculation but can't round up
   # echo "scale=3; 2 * 2.6" | bc
@@ -355,7 +359,8 @@ if can't situation:
   - insert one column
     # awk '$3=$3"\t******"  file.txt
     # awk '{if(/^Linux/ || !NF) print; else{$1=$1"\tAM"; print}}' $1
-
+  - substring
+    #  echo "123" | awk '{print substr($0,1,1)}'
   - NR		record count, lines
   - FNR		file number, when new file is operated, count from 1
   - NF		number of fields
@@ -400,6 +405,8 @@ if can't situation:
    or
    # printf %x 65536
     10000
+  - 16 -> 2
+   # echo "obase=2; `echo $((0x7fffffff))`"| bc
    
 24) echo
   -e
@@ -434,15 +441,7 @@ if can't situation:
   convert utf-8 to gb2312
   # iconv -f utf-8 -t gb2321 c1411046463725/log.csv -o c1411046463725/log.csv 
 
-29) support chinese (en_US.UTF-8 -> zh_CN.GB18030)
- - chinese
- # export LANG=zh_CN.GB18030
- # export LC_ALL=zh_CN.GBK
- # export LC_CTYPE=zh_CN.GBK
-
- - english
- # export LC_ALL=en_US
- # export LC_CTYPE=en_US
+29) support chinese (en_US.UTF-8 -> zh_CN.UTF-8)
 
  need to update vimrc, otherwise it will hard to use.
  # vim /etc/vimrc

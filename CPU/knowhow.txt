@@ -29,6 +29,10 @@
    CONFIG_HZ=250
 
 3- numactl
+   # numastat qemu-kvm
+   # numastat -p qemu-kvm
+
+
 4- search wheter cpu is dispersion
    1) sar's runq-sz=cpus, if every cpu has overload, is dispersion
 5- monit tool  

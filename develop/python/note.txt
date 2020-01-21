@@ -3,7 +3,9 @@
 3- ptags
 4- vim
 5- ModuleNotFoundError: No module named 'ConfigParser'
-
+6- string -> dict
+7- tuple(元祖)/set(集合)/list(列表)/dict(字典)
+8- ? : expression
 1. debug
  1) use command
   # python -m pdb test.py
@@ -34,3 +36,149 @@
   SOLUTION:
   # pip install mysqlclient
   # pip install python-mysqldb  <- maybe need
+
+6- string -> dict
+  has 3 method
+  1) use eval
+     >>> print dic
+     {'1': 1, '0': 0, '3': 3, '2': 2}
+     >>> print dic.keys()
+     ['1', '0', '3', '2']
+     >>> print list1
+     {"0": 0, "1": 1,"2": 2, "3": 3}
+     >>> dict=eval(list1)
+     >>> print dict.keys()
+     ['1', '0', '3', '2']
+
+  2) import json
+     but list1="{'name' : 'john', 'gende' : 'xxx'}" can't change
+
+     >>> print list1
+     {"0": 0, "1": 1,"2": 2, "3": 3}
+     >>> dict1=json.loads(list1)
+     >>> print dict1.keys()
+     [u'1', u'0', u'3', u'2']
+
+  3) import ast
+     >>> import ast
+     >>> dict1 = ast.literal_eval(list1)
+     >>> print dict1.keys()
+     ['1', '0', '3', '2']
+ 
+    
+    
+7- tuple(元祖)/set(集合)/list(列表)/dict(字典)
+  1) tuple
+    - index print index
+    - count print count
+      >>> tuple=(1,2,3,4,4,'make','kobe')
+      >>> print(tuple.index(1))
+      0
+      >>> print(tuple.index('make'))
+      5
+      >>> print(tuple.count(4))
+      2
+
+  2) set
+    - set  uniq
+      >>> set1=[1,1,2]
+      >>> print(set1)
+      [1, 1, 2]
+      >>> print(set(set1))
+      set([1, 2])
+      >>> for item in set(set1):
+      ...     print item
+      ... 
+      1
+      2
+  3) list
+    - index
+    - count
+    - apped
+    - slice
+    - insert
+    - remove/del
+    - pop
+    - extend
+    - sort
+    - copy
+      >>> list=['aa', 'bb', ['cc', 'dd'], "ee"]
+      >>> print(list.index(['cc', 'dd']))
+      2
+      >>> print(list[:])                <-- all
+      ['aa', 'bb', ['cc', 'dd'], 'ee']
+      >>> print(list[:3])               <-- 0,1,2
+      ['aa', 'bb', ['cc', 'dd']]
+      >>> print(list[:-1])              <-- except last one
+      ['aa', 'bb', ['cc', 'dd']]
+      >>> print(list[1:-1])             <-- except first and last one
+      ['bb', ['cc', 'dd']]
+      >>> print(list[::-1])             <-- reverse order
+      ['ee', ['cc', 'dd'], 'bb', 'aa']
+      >>> print(list[::2])              <-- interval is 2
+      ['aa', ['cc', 'dd']]
+      >>> print(list.append('wlm'))
+      None
+      >>> print list
+      ['aa', 'bb', ['cc', 'dd'], 'ee', 'wlm']
+      >>> list.insert(0, 'wu')
+      >>> print list
+      ['wu', 'aa', 'bb', ['cc', 'dd'], 'ee', 'wlm']
+      >>> list[0]='wulm'
+      >>> print(list)
+      ['wulm', 'aa', 'bb', ['cc', 'dd'], 'ee', 'wlm']
+      >>> del list[0]
+      >>> print(list)
+      ['aa', 'bb', ['cc', 'dd'], 'ee', 'wlm']
+      >>> list.remove('ee')
+      >>> print list
+      ['aa', 'bb', ['cc', 'dd'], 'wlm']
+      >>> list.pop()                    <-- default is last one
+      'wlm'
+      >>> print list
+      ['aa', 'bb', ['cc', 'dd']]
+      >>> list.pop(-1)                  <-- pop last one
+      ['cc', 'dd']
+      >>> print list
+      ['aa', 'bb']
+      >>> list1=[1, 2, 3]
+      >>> list.extend(list1)
+      >>> print list
+      ['aa', 'bb', 1, 2, 3]
+      >>> list2=list.copy()
+      Traceback (most recent call last):
+        File "<stdin>", line 1, in <module>
+      AttributeError: 'list' object has no attribute 'copy'
+      >>> print(list.count(1))
+      1
+      >>> print(list.sort())
+      None
+      >>> print list
+      [1, 2, 3, 'aa', 'bb']
+      >>> print(list.index('bb'))
+      4
+   4) dict
+    - dict[key]=value
+    - dict.keys()
+    - dict.values()
+    - dict.pop(4)           key's value is 4, delete its key-value
+    - dict.popitem()        random delete
+    - del dict[2]           key's value is 2 delete its key-value
+    - print(dict.get(1))    get value of key-1,  if noting return none
+    - print(4 in data)      adjust 4 wheter is in data
+    - print(dict['key'])    if nothing will error, so use print(data.get('key))
+    - dict.update(dict1)
+    - print(dict.items()[0]) dict -> list
+       [('a', 'wlm'), ('c', 'song'), ('b', 'wu')]
+    - print(dict.fromkeys([10,9,3],[11,22,'dac']))
+        {9: [11, 22, 'dac'], 10: [11, 22, 'dac'], 3: [11, 22, 'dac']}
+    - 差集
+      vailable_cpus=list(set(available_cpus) - set(used_cpu)) 
+    - 交集
+      vailable_cpus=list(set(available_cpus) & set(used_cpu)) 
+    - 并集
+      vailable_cpus=list(set(available_cpus) | set(used_cpu)) 
+
+8- ? : expression
+   a="bind" if out<3 else "unbind"
+

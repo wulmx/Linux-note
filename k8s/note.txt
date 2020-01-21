@@ -2,6 +2,7 @@
 2- force to delete pods
 3- docker
 4- delete multi pods
+5- usage
 
 1. setting for the max pods
    default is 110 pods per node.
@@ -21,3 +22,7 @@
 
 4- delete multi pods
    # kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
+5- usage
+  1) enter pod
+    # kubectl exec -ti deploy-cpu-stress-high-647c9f79-lkk4n -- /bin/sh
+
