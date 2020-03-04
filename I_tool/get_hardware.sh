@@ -51,3 +51,9 @@ find /proc/irq -name smp_affinity_list -exec echo {} \; -exec cat {} \;  | awk '
 echo "KVM Info:"
 virt-what | awk '{ printf("\t%s\n", $0) }'
 
+echo "raid info:"
+lspci -v -s $(lspci  |grep -i raid | awk '{print $1}' )
+lspci | grep "LSI Logic"
+lsscsi
+udevadm info --query=symlink --name=sda
+udevadm info --query=symlink --name=sdb

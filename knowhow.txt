@@ -61,7 +61,7 @@
 61- dos2unix
 62- data range
 63- bit number
-
+64- KB/MB/GB/TB
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -373,6 +373,15 @@ if can't situation:
   - delete some column
     delete last column
     # awk '{$NF=null; print}' mpstat_client.txt > sar_client.txt
+  - split
+    awk '{split($0,a,":");print a[1],a[2],a[3]}'
+  - substr
+    awk '{print substr($0,1,1)}'
+  - strlen
+    length($1)
+  - if{} else if{} else{}
+    
+    
  
 23) decimal conversion
   1KB = 2^10 Byte = 1024 B = 0x4002^10 Byte = 1024 B = 0x400 
@@ -754,3 +763,9 @@ if can't situation:
 63- bit number
    # echo "obase=2; 1000000000" | bc | awk   '{print length($0)}'
  
+64- KB/MB/GB/TB
+    1KB = 2^10
+    1MB = 2^20
+    1GB = 2^30
+    1TB = 2^40
+    16(2^4) 64(2^6) 256(2^8) 1024(2^10)

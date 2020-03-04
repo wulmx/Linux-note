@@ -1,0 +1,62 @@
+
+Disk /dev/sda: 299.4 GB, 299439751168 bytes, 584843264 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+
+
+Disk /dev/sdc: 299.4 GB, 299439751168 bytes, 584843264 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disk label type: dos
+Disk identifier: 0x000135b5
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdc1   *        2048      976895      487424   83  Linux
+/dev/sdc2          976896    98631679    48827392   83  Linux
+/dev/sdc3        98631680   100583423      975872   82  Linux swap / Solaris
+
+Disk /dev/sdb: 299.4 GB, 299439751168 bytes, 584843264 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disk label type: dos
+Disk identifier: 0x000e343d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1   *        2048     1026047      512000   83  Linux
+/dev/sdb2         1026048   105883647    52428800   83  Linux
+/dev/sdb3       105883648   109789183     1952768   82  Linux swap / Solaris
+/dev/sdb4       111153152   584843263   236845056    f  W95 Ext'd (LBA)
+/dev/sdb5       285177856   348092415    31457280   83  Linux
+/dev/sdb6       419403776   524261375    52428800   83  Linux
+/dev/sdb7       111157248   112181247      512000   83  Linux
+/dev/sdb8       112183296   217040895    52428800   83  Linux
+/dev/sdb9       217042944   221237247     2097152   82  Linux swap / Solaris
+/dev/sdb10      348094464   419391487    35648512   83  Linux
+/dev/sdb11      221239296   223336447     1048576   83  Linux
+/dev/sdb12      223338496   227532799     2097152   82  Linux swap / Solaris
+
+Partition table entries are not in disk order
+
+Disk /dev/sdd: 1174.7 GB, 1174673555456 bytes, 2294284288 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xc86ac2e8
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdd1            2048  2294284287  1147141120   83  Linux
+
+Disk /dev/sde: 1174.7 GB, 1174673555456 bytes, 2294284288 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: gpt
+Disk identifier: 1EB9B30E-85B9-4279-9C27-DE2DDDC0806F
+
+
+#         Start          End    Size  Type            Name
+ 1         2048   2097655807  1000.2G  Microsoft basic 1

@@ -6,6 +6,9 @@
 6- string -> dict
 7- tuple(元祖)/set(集合)/list(列表)/dict(字典)
 8- ? : expression
+9- format(float(15)/float(2.3), '.2f')
+10- is & ==
+
 1. debug
  1) use command
   # python -m pdb test.py
@@ -102,6 +105,13 @@
     - extend
     - sort
     - copy
+    - list -list
+      v1 = [21, 34, 45]
+      v2 = [55, 25, 77]
+      v = map(lambda x: x[0]-x[1], zip(v2, v1))
+      output is v = [34, -9, 32]
+
+    - example
       >>> list=['aa', 'bb', ['cc', 'dd'], "ee"]
       >>> print(list.index(['cc', 'dd']))
       2
@@ -182,3 +192,7 @@
 8- ? : expression
    a="bind" if out<3 else "unbind"
 
+9- format(float(15)/float(2.3), '.2f')
+   
+10- is & ==
+    is just used by string and int, list/array/tuple can't use 'is'

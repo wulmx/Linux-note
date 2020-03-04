@@ -3,6 +3,7 @@
 3- docker
 4- delete multi pods
 5- usage
+6- kubectl
 
 1. setting for the max pods
    default is 110 pods per node.
@@ -25,4 +26,8 @@
 5- usage
   1) enter pod
     # kubectl exec -ti deploy-cpu-stress-high-647c9f79-lkk4n -- /bin/sh
+
+6- kubectl
+  1) get pod id (uid)
+    # kubectl edit pod $name
 

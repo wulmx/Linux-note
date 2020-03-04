@@ -82,7 +82,7 @@
   start time:   buffer get ready time
   issuse time:  sync-time before R/W syscall; async-IO request get ready time
   icd->time:    IO finish time
-  1) lat (submission latency)   io_u->issue_time        - io_u->start_time
-  2) clat (completion latency)  icd->time               - io_u->issue_time
-  3) lat (latency)              icd->time               - io_u->start_time
+  1) lat (submission latency)  = io_u->issue_time        - io_u->start_time
+  2) clat (completion latency) = icd->time               - io_u->issue_time
+  3) lat (latency)             = icd->time               - io_u->start_time
 
