@@ -61,7 +61,9 @@
 61- dos2unix
 62- data range
 63- bit number
+63- X11/Xterm
 64- KB/MB/GB/TB
+65- port switch for windows
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -769,3 +771,17 @@ if can't situation:
     1GB = 2^30
     1TB = 2^40
     16(2^4) 64(2^6) 256(2^8) 1024(2^10)
+63- X11/Xterm
+   1) X11 
+      you need to install xming at windows, otherwise will has DISPLAY issue
+   2) Xterm support chinse font
+      # vim  /etc/X11/Xresources
+        ....
+        xterm*faceName:AR PL Uming CN
+        xterm*faceSize:12
+65- port switch for windows
+  windows:
+  1) netsh interface portproxy add v4tov4  listenaddress=windowsip listenport=9968 connectaddress=150.109.106.156  connectport=22
+  2) netsh  interface  portproxy show all
+  linux:
+  # git clone ssh://root@widowsip:9968/home/Linux-note
