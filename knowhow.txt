@@ -450,6 +450,9 @@ if can't situation:
   -o	log
   -O	change the store name and path
 
+   download dir
+   # wget -r -np -nH -R index.html ftp://10.102.141.120/image
+
 28) iconv
   get the unicode of file
   # file c1411046463725/log.csv
