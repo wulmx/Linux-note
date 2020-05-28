@@ -790,5 +790,13 @@ if can't situation:
   windows:
   1) netsh interface portproxy add v4tov4  listenaddress=windowsip listenport=9968 connectaddress=150.109.106.156  connectport=22
   2) netsh  interface  portproxy show all
+
+	netsh interface portproxy delete v4tov4  listenaddress=10.48.19.179 listenport=9968
   linux:
-  # git clone ssh://root@widowsip:9968/home/Linux-note
+  # git clone ssh://root@widowsip:9969/home/Linux-note
+  # scp -P 9969  root@10.48.19.179:/home/wu/io/linux-block-io_uring-5.8-2020-06-26.tar.gz  ./
+
+66- gcc
+  use rpm install gcc intead of old version
+  # yumdownloader --destdir=gcc --resolve gcc cpp libgcc libgomp
+  # rpm -Uvh *.rpm --nodeps --force
