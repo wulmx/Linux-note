@@ -13,7 +13,7 @@ echo 0 > $debugfs/tracing/tracing_on
 echo `pidof aio` > $debugfs/tracing/set_ftrace_pid
 echo function_graph > $debugfs/tracing/current_tracer
 echo io_submit_one > $debugfs/tracing/set_graph_function
-echo __x64_sys_io_submit >> $debugfs/tracing/set_graph_function
+#echo __x64_sys_io_submit >> $debugfs/tracing/set_graph_function
 echo 1 > $debugfs/tracing/tracing_on
 cat $debugfs/tracing/set_graph_function
 cat $debugfs/tracing/set_ftrace_pid
