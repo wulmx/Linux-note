@@ -266,6 +266,10 @@ if can't situation:
   # rm -f /var/run/yum.pid
 
   download
+  1) # yum install yum-plugin-downloadonly
+  2) # yumdownloader libaio-devel
+
+  cmd as follows maybe fail
   # yum update  kernel-debuginfo -y --downloadonly --downloaddir=debug
 
 15) how to see thread infomation of process

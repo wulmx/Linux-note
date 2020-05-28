@@ -1,0 +1,6 @@
+nolimit the runtime_us
+echo -1 >  /proc/sys/kernel/sched_rt_runtime_us
+1) fifo
+stap cswmom.stp 70 > fifo.log & ./tsch.sh 1 &   sh getps.sh
+2) RR
+stap cswmom.stp 70 > rrscw.log & ./tsch.sh 2 &  sh getps.sh
