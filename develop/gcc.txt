@@ -24,6 +24,16 @@
       设置重启后会失效。
   3） 运行程序后默认会在当前目录下生成core.84910文件84910表示进程号。
 
+  debug
+  - print array
+   p  *(msr_data.info.entries)@54
+
+   https://blog.csdn.net/linuxheik/article/details/17380767
+static uint32_t num_architectural_pmu_gp_counters;
+static uint32_t num_architectural_pmu_fixed_counters;
+static uint32_t num_architectural_pmu_gp_counters;
+static uint32_t num_architectural_pmu_fixed_counters;
+
 5. register info
   1） 64位寄存器相对32发生了以下变化
       - %ebp -> %rbp  ebp仍然可用只是指向了%rbp的低32位

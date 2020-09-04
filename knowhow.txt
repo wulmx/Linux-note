@@ -794,8 +794,8 @@ if can't situation:
 	netsh interface portproxy delete v4tov4  listenaddress=10.48.19.179 listenport=9968
   linux:
   # git clone ssh://root@widowsip:9969/home/Linux-note
-  # scp -P 9969  root@10.48.19.179:/home/wu/io/linux-block-io_uring-5.8-2020-06-26.tar.gz  ./
-
+  # scp -P 9969  root@winip:/home/wu/io/linux-block-io_uring-5.8-2020-06-26.tar.gz  ./
+  # rsync -P -e 'ssh -p 9969' root@ip:/root/iso/Fedo  ./
 66- gcc
   use rpm install gcc intead of old version
   # yumdownloader --destdir=gcc --resolve gcc cpp libgcc libgomp
