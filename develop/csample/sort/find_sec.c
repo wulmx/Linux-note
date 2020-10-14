@@ -3,7 +3,8 @@
 
 int FindSecMin(int arr[], int len)
 {
-    int sec_Min = 32767;
+    //int sec_Min = 32767;
+    int sec_Min = 100;
     //int Min = arr[0];
     int Min = 100;
     int i;
@@ -15,7 +16,7 @@ int FindSecMin(int arr[], int len)
             Min = arr[i];
         }
         else {
-            if (arr[i] < sec_Min)
+            if (arr[i] <= sec_Min)
                 sec_Min = arr[i];
         }
     }
@@ -48,7 +49,7 @@ int FindSecMax(int arr[], int len)
 int main(int argc, const char * argv[]) {
 
     //int arr[] = {1,2,6,7,3,4,9,5,8};
-    int arr[] = {1, 2, 2};
+    int arr[] = {0, 2, 6, 4, 1};
     int len = sizeof(arr)/sizeof(int);
 
     printf("second max value %d\n", FindSecMax(arr, len));
