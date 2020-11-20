@@ -1,3 +1,10 @@
+/*
+ * On success, the PID of the child process is returned in the parent, 
+ * and 0 is returned in the child. 
+ * On failure, -1 is returned in  the  parent
+ *
+ */
+
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>

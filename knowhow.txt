@@ -664,6 +664,9 @@ if can't situation:
 
   4）-i ，将xargs的每个参数一个一个赋值给{} -t 表示先打印
     # neutron net-list | awk '{print $4}' | grep -vE "^$|name" | xargs -t -i neutron net-show {}
+
+  5) rediect to file
+    # ** | xargs -i {} sh -c "cat {}; echo {} > wlm.txt"
 53 - ls
 
   1) print absolute path
@@ -773,10 +776,10 @@ if can't situation:
    # echo "obase=2; 1000000000" | bc | awk   '{print length($0)}'
  
 64- KB/MB/GB/TB
-    1KB = 2^10
-    1MB = 2^20
-    1GB = 2^30
-    1TB = 2^40
+    1KB = 2^10 = 1L<<10 = 1024
+    1MB = 2^20 = 1L<<20 = 1048576
+    1GB = 2^30 = 1L<<30 = 1073741824
+    1TB = 2^40 = 1L<<40 = 1099511627776
     16(2^4) 64(2^6) 256(2^8) 1024(2^10)
 63- X11/Xterm
    1) X11 
