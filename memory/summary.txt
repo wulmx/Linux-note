@@ -74,7 +74,7 @@ http://linuxperf.com/?p=142
        page cache -> filesystem  file's data will cached to page cache
        buff cache -> block device  block device's data will cached to buff cache
    2) monitor process cache
-      # pidstat -l -r|sort -k8nr
+      # pidstat -l -r|sort -k7nr
       # ps -eo time,pid,ppid,%cpu,%mem,psr,rss,vsz,size,comm,args |sort -k8nr 
 
 8- kernel dynamic memory
