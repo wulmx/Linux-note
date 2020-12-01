@@ -24,11 +24,14 @@
 */
 #include <errno.h>
 #include <stdio.h>
+#include <getopt.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <pthread.h>
+#include <string.h>
 
+#define RUNTIME 10000
 static volatile int glob = 0;
 static pthread_spinlock_t splock;
 static pthread_mutex_t mtx;
@@ -90,6 +93,8 @@ usageError(char *pname)
             "    -q   Don't print verbose messages\n");
     fprintf(stderr,
             "    -s   Use spin locks (instead of the default mutexes)\n");
+    fprintf(stderr,
+            "    -t   runtime)\n");
     exit(EXIT_FAILURE);
 }
 
@@ -101,13 +106,10 @@ main(int argc, char *argv[])
     pthread_t *thread;
     int verbose;
 
-    /* Prevent runaway/forgotten process from burning up CPU time forever */
-
-    alarm(120);         /* Unhandled SIGALRM will kill process */
-
     useMutex = 1;
     verbose = 1;
-    while ((opt = getopt(argc, argv, "qs")) != -1) {
+    int runtime = RUNTIME;
+    while ((opt = getopt(argc, argv, "qst:")) != -1) {
         switch (opt) {
         case 'q':
             verbose = 0;
@@ -115,10 +117,16 @@ main(int argc, char *argv[])
         case 's':
             useMutex = 0;
             break;
+        case 't':
+            runtime = atoi(optarg);
+            break;
         default:
             usageError(argv[0]);
         }
     }
+
+    /* Prevent runaway/forgotten process from burning up CPU time forever */
+    alarm(runtime);         /* Unhandled SIGALRM will kill process */
 
     if (optind >= argc)
         usageError(argv[0]);
@@ -129,6 +137,7 @@ main(int argc, char *argv[])
     usleep_time = (optind + 3 < argc) ? atoi(argv[optind + 3]) : 0;
 
     if (verbose) {
+        printf("\nruntime is %d\n", runtime);
         printf("Using %s\n", useMutex ? "mutexes" : "spin locks");
         printf("\tthreads: %d; outer loops: %d; inner loops: %d usleep_time: %d\n",
                 numThreads, numOuterLoops, numInnerLoops, usleep_time);
