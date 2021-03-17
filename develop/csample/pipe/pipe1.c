@@ -3,6 +3,17 @@
  * and 0 is returned in the child. 
  * On failure, -1 is returned in  the  parent
  *
+ * fork 是通过复制父进程的内存生成一个子进程，存在父子关系，进程的内存锁及信号量
+ * 不会继承。
+ * exec 设计目的则是在通过fork生成的进程中加载应用程序，具体可以看下面的例子
+ * # ./p1
+ * this is parent context can get the child pid 1795334 ret is 1795335
+ * this is child context 1795335 ret is 0
+ * root       58008       1  0  2020 ?        00:00:02 /usr/bin/abrt-dump-journal-oops -fxtD
+ * root      133398       1  0  2020 ?        00:00:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+ * root     1795334 1794332  0 07:26 pts/2    00:00:00 ps -ef
+ * root     1795335 1795334  0 07:26 pts/2    00:00:00 grep ps
+ *
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -29,7 +40,7 @@ int main(void)
 		//execlp("ls", "ls", NULL);		//ls输出结果默认对应屏幕
         execlp("ps", "ps", "-ef", NULL);
 	}
-
+    sleep(3);
 	return 0;
 }
 
