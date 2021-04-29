@@ -6,7 +6,7 @@
 
 
 2. cmd
-  # iperf -c 90.1.1.2 -i 1 -t 100000 -b 5M -u -B 2.2.3.100 -p 5001 –l 800
+  # iperf -c 90.1.1.2 -i 1 -t 100000 -u -p 5001 –l 800
     -l  length  unit is Kbyte   default is 8KB
     -b  bindwidth   default is 1Mbps
     -u  UDP   default is TCP

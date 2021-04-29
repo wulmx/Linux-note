@@ -92,6 +92,20 @@ int rm(int index, node *head) {
     free(rm);
 }
 
+void rm_dup(node *l) {
+    node *p;
+    while(l->next) {
+        if(l->val == l->next->val) {
+            p = l->next;
+            l->next = l->next->next;
+            free(p);
+        }
+        else {
+            l = l->next;
+        }
+    }
+}
+
 void traverse(node *list) {
     node *h = list;
     while(h) {
@@ -104,7 +118,7 @@ void traverse(node *list) {
 int main() {
     int a[] = {3, 2, 8};
     int b[] = {8, 2, 8};
-    node *l1 = (list)malloc(sizeof(node));
+    node *l1 = (node *)malloc(sizeof(node));
     //node *l1 = NULL;
     //node *l2 = (list)malloc(sizeof(node));
     node *l2 = NULL;
@@ -114,9 +128,10 @@ int main() {
     traverse(addTwoNumbers(l1, l2));
     traverse(l1);
     traverse(l2);
-    insert(1, 7, l1);
+    insert(1, 8, l1);
     traverse(l1);
-    rm(1, l1);
+    //rm(1, l1);
+    rm_dup(l1);
     traverse(l1);
     free(l1);
     free(l2);

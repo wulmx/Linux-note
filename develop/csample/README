@@ -1,0 +1,2 @@
+1. difference between  char *s = 'wlm' and cha s[4] = 'wlm'
+   https://www.geeksforgeeks.org/whats-difference-between-char-s-and-char-s-in-c/
