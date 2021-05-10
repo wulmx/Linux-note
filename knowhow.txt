@@ -64,6 +64,7 @@
 63- X11/Xterm
 64- KB/MB/GB/TB
 65- port switch for windows
+66- git
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -806,3 +807,10 @@ if can't situation:
 
 67- pcp
  https://github.com/performancecopilot/pcp/commits?author=wuliming
+
+66- git
+
+ clean untracked files
+ # git clean -f -d
+
+
