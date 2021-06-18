@@ -65,6 +65,7 @@
 64- KB/MB/GB/TB
 65- port switch for windows
 66- git
+67- unzip
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -812,5 +813,11 @@ if can't situation:
 
  clean untracked files
  # git clean -f -d
+ 
+ create and add remote branch
+ # git remote add origin ssh://git@10.243.**.**/home/git/repos/libvirt-2.0.git
+ # git push origin BRANCHNAME
 
-
+67- unzip
+ unicode gb2312 unzip
+ # unzip -O cp936
