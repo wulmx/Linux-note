@@ -25,62 +25,68 @@
  * ./mem_take 10000000 20 1000 10 : loop finished took 15277 ms 5.0%us, 26.5%sy
  */
 int main(int argc, char *argv[]) {
-        
-	struct timespec tpstart;
-	struct timespec tpend;
-	long delta;
-	clock_gettime(CLOCK_MONOTONIC, &tpstart);
-	unsigned long nSizeInChar = atoi(argv[1]);
+
+    struct timespec tpstart;
+    struct timespec tpend;
+    long delta;
+    clock_gettime(CLOCK_MONOTONIC, &tpstart);
+    unsigned long nSizeInChar = atoi(argv[1]);
         int type;
         if (argv[2] == NULL)  type = 0;
         else type = atoi(argv[2]);
         long size = 1<<type;
         long loop = nSizeInChar * (1<<10) / size;
-	printf("need allocated MEM(KB) is : %d\n", nSizeInChar);
-	printf("loop times is : %d\n", loop);
-	printf("allocate size is : %d Byte\n", size);
-	
-	//char *pMemData[loop];
-	long i=0;
-	long j=0;
-	long cnt=1;
-	if (argv[4] != NULL)  cnt = 1<<atoi(argv[4]);
-	if (atoi(argv[4]) == 0)
+    printf("need allocated MEM(KB) is : %d\n", nSizeInChar);
+    printf("loop times is : %d\n", loop);
+    printf("allocate size is : %d Byte\n", size);
+    
+    //char *pMemData[loop];
+    long i=0;
+    long j=0;
+    long cnt=1;
+    if (argv[4] != NULL)  cnt = 1<<atoi(argv[4]);
+    if (atoi(argv[4]) == 0)
        	    printf("range times is : %ld times\n", 1<<atoi(argv[2]));
-	else
+    else
        	    printf("range times is : %ld times\n", cnt);
-
-	for (i = 0; i < loop; i++)
-	{
+    
+    for (i = 0; i < loop; i++)
+    {
             char *pMemData;
-	    if (argv[5] != NULL && strcmp("-p", argv[5]) == 0 )  pMemData = mmap(NULL, size, PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	    else if (argv[5] != NULL && strcmp("-m", argv[5]) == 0 ) {
-	        pMemData = (char *)malloc(sizeof(char) * size);
-                memset(pMemData , 0x41 , size);
-	    }
-	    else {
-	        pMemData = (char *)calloc(sizeof(char) * size, sizeof(char));
-                memset(pMemData , 0x41 , size);
-	    }
+        if (argv[5] != NULL && strcmp("-p", argv[5]) == 0 ) {
+            pMemData = mmap(NULL, size, PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+            memset(pMemData , 0x41 , size);
+        }
+        else if (argv[5] != NULL && strcmp("-m", argv[5]) == 0 ) {
+            pMemData = (char *)malloc(sizeof(char) * size);
+            memset(pMemData , 0x41 , size);
+        }
+        else {
+            pMemData = (char *)calloc(sizeof(char) * size, sizeof(char));
+            memset(pMemData , 0x41 , size);
+        }
+    
+        /* read and write part of memory for tunning cpu sys/user */
+        if (cnt > 1) {
+            if (cnt <= size) for (j=0; j < cnt; j++) *(pMemData+j) = 10;
+            else for (j = 0; j < size; j++) *(pMemData+j) = 10;
+        } else {
+            for (j = 0; j < size; j++) *(pMemData+j) = 10;
+        }
+    
+        if (argv[3] != NULL) usleep(atoi(argv[3]));
+    }
 
-	    /* read and write part of memory for tunning cpu sys/user */
-	    if (cnt > 1) {
-	        if (cnt <= size) for (j=0; j < cnt; j++) *(pMemData+j) = 10;
-	        else for (j = 0; j < size; j++) *(pMemData+j) = 10;
-	    } else {
-	        for (j = 0; j < size; j++) *(pMemData+j) = 10;
-	    }
+    clock_gettime(CLOCK_MONOTONIC, &tpend);
+    delta = MILLION*(tpend.tv_sec-tpstart.tv_sec) + (tpend.tv_nsec-tpstart.tv_nsec)/1000;
 
-            if (argv[3] != NULL) usleep(atoi(argv[3]));
-	}
-	clock_gettime(CLOCK_MONOTONIC, &tpend);
-	delta = MILLION*(tpend.tv_sec-tpstart.tv_sec) + (tpend.tv_nsec-tpstart.tv_nsec)/1000;
-	printf("loop finished took %ld ms\n", delta/1000);
-	if (argv[6] != NULL && !strcmp("-e", argv[6])) exit(0);
-	while (1)
-	{
-		sleep(10000);
-	}
+    printf("loop finished took %ld ms\n", delta/1000);
+    if (argv[6] != NULL && !strcmp("-e", argv[6])) exit(0);
 
-	return 0;
+    while (1)
+    {
+    	sleep(10000);
+    }
+    
+    return 0;
 }

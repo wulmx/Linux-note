@@ -4,7 +4,7 @@
 
 /* 
  * https://leetcode-cn.com/problems/two-sum/
- * 给定一组数据，和目标数值，找出数组中2数之和等于目标数值的数的下表
+ * 给定一组数据，和目标数值，找出数组中2数之和等于目标数值的数的下标
 */
 
 int * twoSum(int* nums, int numsSize, int target, int *ret) {

@@ -291,6 +291,15 @@ if can't situation:
  :tabn -> next file
  :tabp -> previos file
 
+ - right swift
+  ctrl+w+w
+  ctrl+w+l
+ - left swift
+  ctrl+w+h
+ - up swift
+  ctrl+w+k
+ - down swift
+  ctrl+w+j
  - vertical(|) split
  :vsp $filename
  

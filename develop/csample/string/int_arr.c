@@ -20,6 +20,7 @@ int main()
 	for (i = 0; i < r; i++)
 	for (j = 0; j < c; j++)
 		*(arr + i*c + j) = ++count;
+
 	for (i = 0; i < r; i++)
 	   // *(arr1 + i) = ++count;  // or as follow
 	   arr1[i] = ++count;
