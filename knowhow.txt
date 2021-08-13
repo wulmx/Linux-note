@@ -735,6 +735,7 @@ if can't situation:
       set encoding=utf-8
    2) cscope
       # cscope -Rbqk
+      # make cscope ARCH=x86 (just index the x86 arch code)
    3) cscope ¿ì½Ý¼ü
      - ctrl \ s
      - ctrl \ g
