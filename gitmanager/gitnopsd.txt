@@ -1,4 +1,5 @@
   1 [core]
+            http.sslverify=false
   2         repositoryformatversion = 0
   3         filemode = true
   4         bare = false
