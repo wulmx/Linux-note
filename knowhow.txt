@@ -67,6 +67,8 @@
 66- git
 67- unzip
 68- debuginfo
+69- tmux
+
 1) about  sed command
    - transfer variable using ""
      # a=bbbbb; sed  "s/xx/$a/g" test.txt  
@@ -844,3 +846,22 @@ if can't situation:
    
    yum --enablerepo=debug install -y kernel-debuginfo-$(uname -r)[root@VM-8-2-centos wlm]# ls
 
+69- tmux
+ # yum install tmux
+ # cat /root/.tmux.conf
+#up
+bind-key k select-pane -U
+#down
+bind-key j select-pane -D
+#left
+bind-key h select-pane -L
+#right
+bind-key l select-pane -R
+
+#synchronize
+bind e setw synchronize-panes
+
+ # tmux -f /root/.tmux.conf
+ ctrl+b -> shift+%  真真
+ ctrl+b -> shift+" 真真
+ ctrl+b -> ?	   help
