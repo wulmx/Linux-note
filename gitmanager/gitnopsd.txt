@@ -1,4 +1,18 @@
-  1 [core]
+# cat /root/.gitconfig
+[http]
+        sslverify = false
+        proxy = http://10.20.*.*:10809
+[https]
+        sslverify = false
+        proxy = https://10.20.*.*:10809
+[user]
+        email = 398776277@qq.com
+        name = wlmx
+
+[core]
+        editor = vim
+
+1 [core]
             http.sslverify=false
   2         repositoryformatversion = 0
   3         filemode = true
@@ -162,3 +176,10 @@
   if your branch is after master and add new function at same time. 
     you can use it.
   # git rebase master    <- it will merge the commits of master
+
+22- 推送本地仓库到远程
+现在github上创建一个仓库，例如：qemu-4.2
+git init -- 新建一个本地仓库
+git commit -m "first commit" -- 将文件commit到本地仓库
+git remote add origin https://github.com/wlmx/qemu-4.1.git -- 添加远程仓库，origin只是一个远程仓库的别名，可以随意取
+git push -u origin master -- 将本地仓库push远程仓库，并将origin设为默认远程仓库

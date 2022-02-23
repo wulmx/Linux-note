@@ -8,7 +8,9 @@
    2) clean source directory
       # make mrproper
    3) install needed package
-      #  yum install -y ncurses-devel openssl-devel.x86_64 bison flex  elfutils-libelf-devel
+      #  yum install -y ncurses-devel openssl-devel.x86_64 bison flex  elfutils-libelf-devel 
+      for BTF compile need dwarves, so should enable the PowerTools repo than
+      # yum install dwarves
    4) make menuconfig then save and exit
       # make menuconfig
         or

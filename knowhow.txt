@@ -1,3 +1,7 @@
+0x400  -> 1KB -> 1 << 10
+0xfffff  -> 1MB -> 1 << 20
+0x40000000  -> 1GB -> 1 << 30
+
 1- sed
 2- message output
 3- set +x
@@ -68,6 +72,8 @@
 67- unzip
 68- debuginfo
 69- tmux
+70- vscode
+71- source-insigt
 
 1) about  sed command
    - transfer variable using ""
@@ -862,6 +868,15 @@ bind-key l select-pane -R
 bind e setw synchronize-panes
 
  # tmux -f /root/.tmux.conf
- ctrl+b -> shift+%  靠靠
- ctrl+b -> shift+" 靠靠
+ ctrl+b -> shift+%  左右分屏
+ ctrl+b -> shift+" 上下分屏
  ctrl+b -> ?	   help
+ ctrl+b -> q -> 选择0就到0号窗口
+
+ # tmux attach  直接进入之前保存的senssion
+ # 
+
+70- vscode
+ ctrl+p  查找文件
+ 查看-》打开视图-》大纲  查看所有函数
+ alt + <- 回退上一步
