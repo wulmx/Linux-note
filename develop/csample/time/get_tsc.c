@@ -10,7 +10,7 @@ unsigned long long native_read_tsc(void)
 int main()
 {
         unsigned long long val;
-	unsigned long long val2;
+		unsigned long long val2;
 
         val =native_read_tsc();
         sleep(2);

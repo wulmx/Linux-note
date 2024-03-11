@@ -9,6 +9,7 @@
  * 5) local variable is stack
  * 6) malloc is heap
  * a's addr is 0x60104c						-> static initialized
+ *      p1 = (char *)malloc(10);				// heap
  * *p1's &p1 addr is 0x601058					-> static uninitialized (BSS)
  * b's addr is 0x7fff3f558a2c					-> stack
  * s[]'s addr is 0x7fff3f558a20					-> stack
@@ -16,6 +17,7 @@
  * s[]'s &s[0] addr is 0x7fff3f558a20, 0x7fff3f558a21		-> stack
  * abc's addr is 0x400915					-> text segment
  * *p2's &p2 addr is 0x7fff3f558a18				-> stack
+ *   char *p3 = "123456";     					// p3: stack "123456": text segment
  * *p3's &p3 addr is 0x7fff3f558a10				-> stack
  * *p3's p3 addr is 0x400941					-> text segment
  * *p3's &(*p3) addr is 0x400941				-> text segment
@@ -24,6 +26,7 @@
  * &p1 addr is 0x601058						-> BSS
  * p1 addr is 0x1e0e010						-> heap
  * *p1 addr is 0x61						-> ascii
+ *   char *p2;             			    		// stack
  * &p2 addr is 0x7fff3f558a18					-> stack
  * p2 addr is 0x1e0e030						-> heap
  * &p1 addr is 0x601058						-> static BSS 
@@ -55,28 +58,30 @@ int main()
 
     char *p2;             			    		// stack
 	printf("*p2's &p2 addr is %p\n", &p2);		// 0x7fff3f558a18
+	printf("*p2's p2 addr is %p\n", p2);		// nil
     char *p3 = "123456";     					// p3: stack "123456": text segment
-	printf("*p3's &p3 addr is %p\n", &p3);			//
-	printf("*p3's p3 addr is %p\n", p3);			//
-	printf("*p3's &(*p3) addr is %p\n", &(*p3));		//
-	printf("123456 addr is %p\n", &("123456"));		//
+	printf("*p3's &p3 addr is %p\n", &p3);		// 0x7ffe2bcc0840 stack
+	printf("*p3's p3 addr is %p\n", p3);		//0x400a1e text
+	printf("*p3's &(*p3) addr is %p\n", &(*p3));		//0x400a1e
+	printf("123456 addr is %p\n", &("123456"));		//0x400a1e
 
-        static int c =0;    					// static for initialized so together with a. 
+	static int c =0;    					// static for initialized so together with a. 
 	printf("c addr is %p\n", &c);				//
 
-        p1 = (char *)malloc(10);				// heap
-	printf("&p1 addr is %p\n", &p1);			// 0x601058
-	printf("p1 addr is %p\n", p1);				// 0x1e0e010 ->  p is the address which is pointed
+    p1 = (char *)malloc(10);				// heap
+	printf("&p1 addr is %p\n", &p1);		// 0x601058 heap
+	printf("p1 addr is %p\n", p1);			// 0x1e0e010 ->  p is the address which is pointed heap
+	printf("*p1 addr is %p\n", *p1);		//nil
 	    *p1 = 'a';
-	printf("*p1 addr is %p\n", *p1);			//
+	printf("*p1 addr is %p\n", *p1);		//0x61=96 = the ascii of '
 
-        p2 = (char *)malloc(20); 				// heap
+    p2 = (char *)malloc(20); 				// heap
 	printf("&p2 addr is %p\n", &p2);			// 0x7fff3f558a18
 	printf("p2 addr is %p\n", p2);				// 0x1e0e030
 
-        strcpy(p1, "123456");    				// 
-	printf("&p1 addr is %p\n", &p1);			//
-	printf("p1 addr is %p\n", p1);				// p is the address which is pointed
+    strcpy(p1, "123456");    				// 
+	printf("&p1 addr is %p\n", &p1);			// &p1 is the addr of p1 self
+	printf("p1 addr is %p\n", p1);				// p is the address which is pointed, is the first addr of malloc
 	printf("123456 addr is %p\n", &("123456"));		//
 	printf("*p3's p3 addr is %p\n", p3);			//
 	

@@ -20,7 +20,7 @@ c		&b		0x7ffcf9c19438
 3) c = &b
 
 output:
-a addr is 0xc
+a addr is 0xc, is the 12 hex.
 &a addr is 0x7ffcf9c19444
 b addr is a's addr, it's equal to &a 0x7ffcf9c19444
 *b is a 0xc

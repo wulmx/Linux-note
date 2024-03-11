@@ -259,6 +259,13 @@ if can't situation:
 
 14) yum
 
+   yum proxy
+  # cat /etc/yum.con
+  gpgcheck=0
+  sslverify=False
+  proxy=http://10.20.13.83:10809
+
+
   install epel yum
   install alibaba epel
   # wget -O /etc/yum.repos.d/epel-7.repo http://mirrors.aliyun.com/repo/epel-7.repo 
@@ -714,6 +721,7 @@ if can't situation:
   # pip install pip==9.0.1
 
 57- ps & thread & sub_process
+  ps -eLo psr,comm | sort -nk +1  | grep -E ' 18 | 17 | 2 | 1 '   查看指定核跑了哪些线程
   1) select all thread 
      # ps mp 6648 -o THREAD,tid
   
@@ -737,6 +745,7 @@ if can't situation:
     
 
 58- vim
+   :%!xxd  可以查看二进制文件
    1)  support chinese
      # vim /etc/vimrc
       set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936

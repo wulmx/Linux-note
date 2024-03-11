@@ -77,11 +77,14 @@ int main(int args, char *argv[])
      */
     char *pm;
     char pm1[6];
+    char pm2[6];
     pm = (char *)malloc(sizeof(char));
     int cpu = 2;
     sprintf(pm, "cpu %d", cpu);
     sprintf(pm1, "cpu %d", cpu);
-    printf("%s %s \n", pm, pm1);
+	pm2[0]='a';
+	pm2[1]='a';
+    printf("%s %s %s\n", pm, pm1, pm2);
 }
 
 char * strncat_s(char * dest, char * src, size_t n, size_t total_buf_size)
